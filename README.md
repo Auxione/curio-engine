@@ -13,7 +13,7 @@ Curio Engine is a learning project based on various tutorials on internet.
 * Resource Management with File I/O
 
 # Examples
-* [Asteroids Demo](https://github.com/Auxione/curio-engine/tree/master/Curio-engine/testsrc/examplegame)
+* [Asteroids Demo](https://github.com/Auxione/curio-engine/blob/master/src/tests/examplegame/Main.java)
 
 # Licences
 * The engine, and all the backends in this repo are licenced under MIT licence, which you can find [here](https://github.com/Auxione/curio-engine/blob/master/LICENSE)
