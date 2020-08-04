@@ -11,14 +11,12 @@ import graphics.renderer2d.FontData;
 public class Main extends SceneBasedGame {
 
 	public static void main(String[] args) {
-		EngineSettings engineSettings = new EngineSettings();
+		Main exampleGame = new Main();
 
 		// Set parameters
-		engineSettings.renderer = EngineSettings.RENDERER_OPENGL;
-		engineSettings.window = EngineSettings.WINDOW_GLFW;
-		engineSettings.audio = EngineSettings.AUDIO_OPENAL;
-
-		Main exampleGame = new Main(engineSettings);
+		EngineSettings.renderer = EngineSettings.RENDERER_OPENGL;
+		EngineSettings.window = EngineSettings.WINDOW_GLFW;
+		EngineSettings.audio = EngineSettings.AUDIO_OPENAL;
 
 		exampleGame.windowSettings.title = "ExampleGame";
 		exampleGame.windowSettings.width = 800;
@@ -37,13 +35,12 @@ public class Main extends SceneBasedGame {
 		exampleGame.run();
 	}
 
-	public Main(EngineSettings engineSettings) {
-		super(engineSettings);
+	public Main() {
 	}
 
 	public static int score = 0;
 	public static int lifes = 3;
-	
+
 	@Override
 	public void setup() {
 		// set the background to white color.

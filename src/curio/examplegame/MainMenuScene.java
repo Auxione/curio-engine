@@ -47,7 +47,7 @@ public class MainMenuScene extends Scene {
 	}
 
 	@Override
-	public void render2D(Renderer2D renderer2D) {
+	public void onGUIRender(Renderer2D renderer2D) {
 		// ... and render it.
 		playButton.render(renderer2D);
 	}
@@ -56,4 +56,5 @@ public class MainMenuScene extends Scene {
 	protected void onUnload() {
 		System.out.println("This is a unload notification for main menu scene.");
 	}
+
 }

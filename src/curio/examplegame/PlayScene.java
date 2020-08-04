@@ -5,6 +5,7 @@ import common.math.Transform2;
 import core.scenesys.Scene;
 import core.scenesys.SceneManager;
 import graphics.Color;
+
 import graphics.renderer2d.FontData;
 import graphics.renderer2d.Renderer2D;
 import graphics.renderer2d.StringRenderer;
@@ -104,7 +105,7 @@ public class PlayScene extends Scene {
 	}
 
 	@Override
-	public void render2D(Renderer2D renderer2D) {
+	public void onGUIRender(Renderer2D renderer2D) {
 		// render rocket and asteroids
 		this.procket.render(renderer2D);
 		for (int i = 0; i < asteroids.length; i++) {

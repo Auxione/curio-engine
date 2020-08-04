@@ -62,7 +62,7 @@ public class Asteroid implements RaycastObject {
 			// add the calculated position.
 
 			this.rigidBody.apply(this.transform);
-			this.transform.updateThenApply(this.rectangle);
+			this.transform.update(this.rectangle);
 		}
 	}
 

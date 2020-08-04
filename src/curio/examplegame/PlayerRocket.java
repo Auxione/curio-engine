@@ -145,7 +145,7 @@ public class PlayerRocket {
 		this.rigidBody.fixedUpdate(deltaTime);
 
 		this.transform.translate(this.rigidBody.getDeltaPosition());
-		this.transform.updateThenApply(this.rectangle);
+		this.transform.update(this.rectangle);
 		this.exhaustPortTransform.update();
 
 		this.particleEmitterBackThrust.active = false;
