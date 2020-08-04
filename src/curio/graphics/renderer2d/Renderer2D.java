@@ -5,31 +5,14 @@ import org.joml.Vector2f;
 import common.geom.Rectangle;
 import common.geom.Triangle;
 import common.math.MathUtils;
-import core.debug.DebugObject;
+import core.EngineSettings;
+import core.debug.DebugPrint;
 import graphics.Color;
-import graphics.Graphics;
 import graphics.Texture;
 import graphics.TextureCoordinate;
 import platform.opengl.OGL_QuadRenderer2D;
-import platform.opengl.OGL_TrisRenderer2D;
 
-public abstract class Renderer2D implements Graphics, DebugObject {
-	/**
-	 * Maximum quads per batch.
-	 */
-	public static final int MAXQUADS = 20_000;
-	/**
-	 * Maximum vertices per quads in batch.
-	 */
-	public static final int MAXVERTICES = MAXQUADS * 4;
-	/**
-	 * Maximum indices for vertices.
-	 */
-	public static final int MAXINDICES = MAXQUADS * 6;
-	/**
-	 * The number of textures active on screen simultaneously.
-	 */
-	public static final int TEXTURESAMPLERSIZE = 32;
+public abstract class Renderer2D implements DebugPrint {
 	/**
 	 * The default {@link TextureCoordinate}.
 	 */
@@ -46,20 +29,22 @@ public abstract class Renderer2D implements Graphics, DebugObject {
 	/**
 	 * Create new instance of renderer object.
 	 * 
-	 * @param i      : For future uses.
 	 * @param width  : width of the frame buffer.
 	 * @param height : height of the frame buffer.
 	 */
-	public static Renderer2D createInstance(int index, int width, int height) {
-		switch (index) {
-		case 1:
-			return new OGL_TrisRenderer2D(width, height);
+	public static Renderer2D createInstance(int width, int height) {
+		switch (EngineSettings.renderer) {
 		default:
 			return new OGL_QuadRenderer2D(width, height);
 		}
-	};
+	}
 
-	protected Renderer2D() {
+	private int width;
+	private int height;
+
+	protected Renderer2D(int width, int height) {
+		this.width = width;
+		this.height = height;
 	}
 
 	protected final void init(Color color, Texture texture, TextureCoordinate textureCoordinate) {
@@ -67,6 +52,14 @@ public abstract class Renderer2D implements Graphics, DebugObject {
 		Renderer2D.defaultColor = color;
 		Renderer2D.defaultWhiteTexture = texture;
 	}
+
+	public final void setSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+		onSizeChange(this.width, this.height);
+	}
+
+	protected abstract void onSizeChange(int width, int height);
 
 	/**
 	 * Set background to given color.
@@ -300,7 +293,7 @@ public abstract class Renderer2D implements Graphics, DebugObject {
 	 * @param angle  : angle in radian.
 	 */
 
-	public void fillRectRotated(float x, float y, int width, int height, float angle) {
+	public final void fillRectRotated(float x, float y, int width, int height, float angle) {
 		fillRectRotated(x, y, width, height, angle, Renderer2D.defaultColor, Renderer2D.defaultWhiteTexture,
 				Renderer2D.defaultTextureCoordinate);
 	}
@@ -317,7 +310,7 @@ public abstract class Renderer2D implements Graphics, DebugObject {
 	 * @param color  : {@link Color} of the rectangle.
 	 * 
 	 */
-	public void fillRectRotated(float x, float y, int width, int height, float angle, Color color) {
+	public final void fillRectRotated(float x, float y, int width, int height, float angle, Color color) {
 		fillRectRotated(x, y, width, height, angle, color, Renderer2D.defaultWhiteTexture,
 				Renderer2D.defaultTextureCoordinate);
 	}
@@ -335,7 +328,8 @@ public abstract class Renderer2D implements Graphics, DebugObject {
 	 * @param texture : {@link Texture} of the rectangle.
 	 * 
 	 */
-	public void fillRectRotated(float x, float y, int width, int height, float angle, Color color, Texture texture) {
+	public final void fillRectRotated(float x, float y, int width, int height, float angle, Color color,
+			Texture texture) {
 		fillRectRotated(x, y, width, height, angle, color, texture, Renderer2D.defaultTextureCoordinate);
 	}
 
@@ -352,8 +346,8 @@ public abstract class Renderer2D implements Graphics, DebugObject {
 	 * @param textureCoordinate : {@link TextureCoordinate} of the rectangle.
 	 */
 
-	public void fillRectRotated(float x, float y, int width, int height, float angle, Color color, Texture texture,
-			TextureCoordinate textureCoordinate) {
+	public final void fillRectRotated(float x, float y, int width, int height, float angle, Color color,
+			Texture texture, TextureCoordinate textureCoordinate) {
 		Vector2f p1 = new Vector2f(x - width / 2, y - height / 2);
 		Vector2f p2 = new Vector2f(x + width / 2, y - height / 2);
 		Vector2f p3 = new Vector2f(x + width / 2, y + height / 2);
@@ -430,20 +424,21 @@ public abstract class Renderer2D implements Graphics, DebugObject {
 	public abstract void fillTris(float x1, float y1, float x2, float y2, float x3, float y3, Color color,
 			Texture texture, TextureCoordinate textureCoordinate);
 
-	public void fillTris(float x1, float y1, float x2, float y2, float x3, float y3, Color color, Texture texture) {
+	public final void fillTris(float x1, float y1, float x2, float y2, float x3, float y3, Color color,
+			Texture texture) {
 		fillTris(x1, y1, x2, y2, x3, y3, color, texture, Renderer2D.defaultTextureCoordinate);
 	};
 
-	public void fillTris(float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
+	public final void fillTris(float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 		fillTris(x1, y1, x2, y2, x3, y3, color, Renderer2D.defaultWhiteTexture, Renderer2D.defaultTextureCoordinate);
 	};
 
-	public void fillTris(float x1, float y1, float x2, float y2, float x3, float y3) {
+	public final void fillTris(float x1, float y1, float x2, float y2, float x3, float y3) {
 		fillTris(x1, y1, x2, y2, x3, y3, Renderer2D.defaultColor, Renderer2D.defaultWhiteTexture,
 				Renderer2D.defaultTextureCoordinate);
 	};
 
-	private void fillTris(Vector2f vector2f, Vector2f vector2f2, Vector2f vector2f3, Color defaultColor2,
+	public final void fillTris(Vector2f vector2f, Vector2f vector2f2, Vector2f vector2f3, Color defaultColor2,
 			Texture defaultWhiteTexture2, TextureCoordinate defaultTextureCoordinate2) {
 		fillTris(vector2f.x, vector2f.y, vector2f2.x, vector2f2.y, vector2f3.x, vector2f3.y, Renderer2D.defaultColor,
 				Renderer2D.defaultWhiteTexture, Renderer2D.defaultTextureCoordinate);
@@ -491,5 +486,11 @@ public abstract class Renderer2D implements Graphics, DebugObject {
 				textureCoordinate);
 	}
 
-	public abstract void setRenderSize(float width, float height);
+	public final int getWidth() {
+		return this.width;
+	}
+
+	public final int getHeight() {
+		return this.height;
+	}
 }
