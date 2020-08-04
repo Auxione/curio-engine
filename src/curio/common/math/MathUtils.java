@@ -113,6 +113,29 @@ public class MathUtils {
 		return (px > rectx && px < rectx + rectWidth && py > recty && py < recty + rectHeight);
 	}
 
+	private static float epsilon = 0.0001f;
+
+	public static boolean isParallel(Vector2f p11, Vector2f p12, Vector2f p21, Vector2f p22) {
+		Vector2f norm1 = new Vector2f();
+		p11.sub(p12, norm1);
+		norm1.normalize();
+
+		Vector2f norm2 = new Vector2f();
+		p21.sub(p22, norm2);
+		norm2.normalize();
+
+		float dot = norm1.dot(norm2);
+		if (dot <= (1f + epsilon) && dot >= (1f - epsilon)) {
+			return true;
+		}
+
+		if (dot >= -(1f + epsilon) && dot <= -(1f - epsilon)) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * Vector manipulation class for curio engine.
 	 * 
