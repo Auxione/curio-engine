@@ -6,8 +6,6 @@ import common.utilities.NativeObjectManager;
 
 import core.debug.DebugManager;
 import core.debug.DebugManagerSettings;
-
-import graphics.Color;
 import graphics.renderer2d.Renderer2D;
 
 /**
@@ -18,7 +16,8 @@ import graphics.renderer2d.Renderer2D;
  *
  */
 public abstract class BasicGame extends Program implements GameCycle {
-	private Renderer2D renderer2D;
+	private Renderer2D guiRenderer;
+
 	private FrameCounter counter;
 
 	private boolean exitRequested = false;
@@ -31,15 +30,6 @@ public abstract class BasicGame extends Program implements GameCycle {
 	}
 
 	/**
-	 * Create basic game instance from given engine settings.
-	 * 
-	 * @param engineSettings : The settings to apply.
-	 */
-	protected BasicGame(EngineSettings engineSettings) {
-		this.engineSettings = engineSettings;
-	}
-
-	/**
 	 * Run the application.
 	 * 
 	 */
@@ -49,11 +39,10 @@ public abstract class BasicGame extends Program implements GameCycle {
 		initWindow();
 		Console.fine("");
 
-		this.renderer2D = Renderer2D.createInstance(this.engineSettings.renderer, windowSettings.width,
-				windowSettings.height);
+		this.guiRenderer = Renderer2D.createInstance(windowSettings.width, windowSettings.height);
 
-		this.setup();
 		Console.fine("");
+		DebugManager.applySettings(this.debugManagerSettings);
 
 		this.counter = new FrameCounter(window.getTime(), 60, new Runnable() {
 			@Override
@@ -62,8 +51,8 @@ public abstract class BasicGame extends Program implements GameCycle {
 			}
 		});
 
-		DebugManager.applySettings(this.debugManagerSettings, this.renderer2D, this.counter);
-		
+		this.setup();
+
 		while (!this.window.closeRequest() && !this.exitRequested) {
 			this.earlyUpdate();
 
@@ -73,16 +62,11 @@ public abstract class BasicGame extends Program implements GameCycle {
 			}
 			this.window.pollEvents();
 
-			update();
+			this.update();
 
 			this.lateUpdate();
 
-			this.renderer2D.bind();
-			this.renderer2D.beginScene();
-			this.render2D(this.renderer2D);
-			DebugManager.draw(this.renderer2D);
-
-			this.renderer2D.endScene();
+			renderGUI();
 
 			this.window.swapBuffers();
 			this.window.clear();
@@ -92,6 +76,13 @@ public abstract class BasicGame extends Program implements GameCycle {
 		Console.fine("");
 		this.terminate();
 		NativeObjectManager.terminateAll();
+	}
+
+	private void renderGUI() {
+		this.guiRenderer.bind();
+		this.guiRenderer.beginScene();
+		this.onGUIRender(this.guiRenderer);
+		this.guiRenderer.endScene();
 	}
 
 	@Override
@@ -110,15 +101,22 @@ public abstract class BasicGame extends Program implements GameCycle {
 	public void terminate() {
 	}
 
-	/**
-	 * Set the background color for renderer2D.
-	 * 
-	 * @param color
-	 */
-	public final void setBackground(Color color) {
-		if (this.renderer2D != null) {
-			this.renderer2D.setBackground(color);
-		}
+	@Override
+	public void onGUIRender(Renderer2D renderer) {
+	}
+	
+	public final void registerFrameCounter() {
+		DebugManager.register(this.counter);
+	}
+
+	public final void registerGUIRenderer() {
+		DebugManager.register(this.guiRenderer);
+	}
+
+	public final void applySettings() {
+		super.applySettings();
+		this.guiRenderer.setSize(this.windowSettings.width, this.windowSettings.height);
+		DebugManager.applySettings(debugManagerSettings);
 	}
 
 	/**

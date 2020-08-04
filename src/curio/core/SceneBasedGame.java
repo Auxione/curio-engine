@@ -20,7 +20,7 @@ import graphics.renderer2d.Renderer2D;
  *
  */
 public abstract class SceneBasedGame extends Program implements Runnable {
-	private Renderer2D renderer2D;
+	private Renderer2D guiRenderer;
 	private FrameCounter counter;
 
 	private boolean exitRequested = false;
@@ -36,15 +36,6 @@ public abstract class SceneBasedGame extends Program implements Runnable {
 	}
 
 	/**
-	 * Create scene based game instance from given engine settings.
-	 * 
-	 * @param engineSettings : The settings to apply.
-	 */
-	protected SceneBasedGame(EngineSettings engineSettings) {
-		this.engineSettings = engineSettings;
-	}
-
-	/**
 	 * Run the application.
 	 * 
 	 */
@@ -54,20 +45,9 @@ public abstract class SceneBasedGame extends Program implements Runnable {
 		initWindow();
 		Console.fine("");
 
-		this.renderer2D = Renderer2D.createInstance(this.engineSettings.renderer, windowSettings.width,
-				windowSettings.height);
-
-		this.setup();
+		this.guiRenderer = Renderer2D.createInstance(windowSettings.width, windowSettings.height);
 		Console.fine("");
 
-		this.counter = new FrameCounter(window.getTime(), 60, new Runnable() {
-			@Override
-			public void run() {
-				DebugManager.print();
-			}
-		});
-
-		DebugManager.applySettings(this.debugManagerSettings, this.renderer2D, this.counter);
 		SceneManager sceneManager = SceneManager.getInstance();
 		sceneManager.setSceneBasedGame(this);
 
@@ -86,7 +66,8 @@ public abstract class SceneBasedGame extends Program implements Runnable {
 			}
 		});
 
-		DebugManager.applySettings(this.debugManagerSettings, this.renderer2D, this.counter);
+		DebugManager.applySettings(this.debugManagerSettings);
+
 		while (!this.window.closeRequest() && !this.exitRequested) {
 			if (sceneManager.getActiveScene() == null) {
 				Console.severe(this, "Active scene is null!");
@@ -104,10 +85,12 @@ public abstract class SceneBasedGame extends Program implements Runnable {
 			sceneManager.getActiveScene().update();
 			sceneManager.getActiveScene().lateUpdate();
 
-			this.renderer2D.bind();
-			this.renderer2D.beginScene();
-			sceneManager.getActiveScene().render2D(this.renderer2D);
-			this.renderer2D.endScene();
+			this.guiRenderer.bind();
+			this.guiRenderer.beginScene();
+			sceneManager.getActiveScene().onGUIRender(this.guiRenderer);
+			DebugManager.draw(this.guiRenderer);
+			
+			this.guiRenderer.endScene();
 
 			this.window.swapBuffers();
 			this.window.clear();
@@ -131,7 +114,7 @@ public abstract class SceneBasedGame extends Program implements Runnable {
 	 * @param color
 	 */
 	public final void setBackground(Color color) {
-		this.renderer2D.setBackground(color);
+		this.guiRenderer.setBackground(color);
 	}
 
 	/**
@@ -139,6 +122,20 @@ public abstract class SceneBasedGame extends Program implements Runnable {
 	 */
 	protected final void exit() {
 		this.exitRequested = true;
+	}
+
+	public final void registerFrameCounter() {
+		DebugManager.register(this.counter);
+	}
+
+	public final void registerGUIRenderer() {
+		DebugManager.register(this.guiRenderer);
+	}
+
+	public final void applySettings() {
+		super.applySettings();
+		DebugManager.applySettings(debugManagerSettings);
+		this.guiRenderer.setSize(windowSettings.width, windowSettings.height);
 	}
 
 	/**
