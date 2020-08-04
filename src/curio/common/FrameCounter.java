@@ -86,6 +86,6 @@ public class FrameCounter implements DebugObject {
 	@Override
 	public String debugPrint() {
 		StringBuilder sb = new StringBuilder();
-		return sb.append("FPS: ").append(getFPS()).toString();
+		return sb.append(getFPS()).append(" fps.").toString();
 	}
 }
