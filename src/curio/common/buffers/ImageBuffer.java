@@ -1,4 +1,4 @@
-package common.utilities;
+package common.buffers;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -8,6 +8,8 @@ import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
 import org.lwjgl.system.MemoryUtil;
+
+import common.utilities.Resource;
 
 /**
  * ImageBuffer for curio-engine.

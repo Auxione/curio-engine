@@ -1,4 +1,4 @@
-package common.utilities;
+package common.buffers;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +9,8 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import org.lwjgl.system.MemoryUtil;
+
+import common.utilities.Resource;
 
 /**
  * AudioBuffer for playing audio files. Currently only wave files supported.
