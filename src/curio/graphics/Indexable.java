@@ -1,4 +1,4 @@
-package graphics.renderer3d;
+package graphics;
 
 /**
  * Interface for polygons that needs to rendered with indices.
