@@ -1,10 +1,10 @@
 package core.debug;
 
 import java.awt.Font;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import common.Console;
-import common.FrameCounter;
 import core.EngineUtils;
 import graphics.Color;
 import graphics.renderer2d.FontData;
@@ -12,26 +12,36 @@ import graphics.renderer2d.Renderer2D;
 import graphics.renderer2d.StringRenderer;
 
 public class DebugManager {
-	public static HashMap<DebugObject, Color> debugObjects = new HashMap<DebugObject, Color>();
+	public static HashMap<DebugDraw, Color> debugDrawObjects = new HashMap<DebugDraw, Color>();
+	public static ArrayList<DebugPrint> debugPrintObjects = new ArrayList<DebugPrint>();
+
 	public static FontData debugfont;
 	private static boolean printActive = false;
 	private static boolean drawActive = false;
 	private static boolean logDebugPrint = false;;
 
-	public static void register(DebugObject debug, Color color) {
-		debugObjects.put(debug, color);
+	public static void register(DebugDraw debug, Color color) {
+		debugDrawObjects.put(debug, color);
 	}
 
-	public static void register(DebugObject debug) {
-		debugObjects.put(debug, new Color(Color.white));
+	public static void register(DebugPrint debug) {
+		debugPrintObjects.add(debug);
+	}
+
+	public static void register(DebugObject debug, Color color) {
+		register(debug, color);
+		register(debug);
 	}
 
 	public static void draw(Renderer2D renderer2d) {
 		if (!drawActive)
 			return;
 
-		for (DebugObject debugObj : debugObjects.keySet()) {
-			debugObj.debugDraw(renderer2d, debugObjects.get(debugObj));
+		for (DebugDraw debugObj : debugDrawObjects.keySet()) {
+			if (debugObj == null) {
+				continue;
+			}
+			debugObj.debugDraw(renderer2d, debugDrawObjects.get(debugObj));
 		}
 	}
 
@@ -48,10 +58,11 @@ public class DebugManager {
 	public static void print() {
 		if (!printActive)
 			return;
-		for (DebugObject debugObj : debugObjects.keySet()) {
-			if (debugObj.debugPrint() == null) {
+		for (DebugPrint debugObj : debugPrintObjects) {
+			if (debugObj == null) {
 				continue;
 			}
+
 			if (logDebugPrint) {
 				Console.info(debugObj, debugObj.debugPrint());
 			} else {
@@ -70,16 +81,5 @@ public class DebugManager {
 
 		DebugManager.logDebugPrint = debugManagerSettings.log;
 
-	}
-
-	public static void applySettings(DebugManagerSettings debugManagerSettings, Renderer2D renderer2D,
-			FrameCounter frameCounter) {
-		if (debugManagerSettings.registerFrameCounter) {
-			DebugManager.register(frameCounter);
-		}
-		if (debugManagerSettings.registerRenderer2d) {
-			DebugManager.register(renderer2D);
-		}
-		applySettings(debugManagerSettings);
 	}
 }
