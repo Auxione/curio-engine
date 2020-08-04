@@ -1,31 +1,29 @@
 package platform.opengl;
 
-import java.util.ArrayList;
-
+import common.buffers.IndexBuffer;
+import common.buffers.VertexBuffer;
 import common.utilities.NativeObject;
-import graphics.renderer3d.Mesh;
+import graphics.Mesh;
 
 import static org.lwjgl.opengl.GL45.*;
 
-public class OGL_VertexArray implements NativeObject, OGL_Object, Mesh {
-	public ArrayList<OGL_Buffer> buffers = new ArrayList<OGL_Buffer>();
-
+public class OGL_VertexArray extends Mesh implements NativeObject, OGL_Object {
 	private int id;
 	private int DRAW_MODE;
 
-	private OGL_IndexBuffer indexBuffer;
 	private OGL_VertexBuffer vertexBuffer;
+	private OGL_IndexBuffer indexBuffer;
 
-	public enum Mode {
-		TRIANGLES, LINES, LINE_STRIP, LINE_LOOP, TRIANGLE_STRIP, TRIANGLE_FAN, POINTS
-	}
-
-	public OGL_VertexArray(Mode mode) {
+	public OGL_VertexArray(DrawMode mode, DrawType bufferType, VertexBuffer vertexBuffer, IndexBuffer indexBuffer) {
+		super(vertexBuffer, indexBuffer);
 		this.id = glGenVertexArrays();
+
+		this.vertexBuffer = new OGL_VertexBuffer(bufferType);
+		this.indexBuffer = new OGL_IndexBuffer(bufferType);
 		setDrawMode(mode);
 	}
 
-	public void setDrawMode(Mode mode) {
+	public void setDrawMode(DrawMode mode) {
 		switch (mode) {
 		case TRIANGLE_STRIP:
 			this.DRAW_MODE = GL_TRIANGLE_STRIP;
@@ -51,8 +49,53 @@ public class OGL_VertexArray implements NativeObject, OGL_Object, Mesh {
 		}
 	}
 
-	public void add(OGL_Buffer iBuffer) {
-		this.buffers.add(iBuffer);
+	@Override
+	public void uploadSubData(int VBindex, int IBindex) {
+		bind();
+		if (VBindex != -1) {
+			this.vertexBuffer.uploadSubData(super.vertexBuffer, VBindex);
+		}
+		if (IBindex != -1) {
+			this.indexBuffer.uploadSubData(super.indexBuffer, IBindex);
+		}
+	}
+
+	@Override
+	public void uploadData() {
+		bind();
+		this.vertexBuffer.uploadData(super.vertexBuffer);
+		this.indexBuffer.uploadData(super.indexBuffer);
+	}
+
+	@Override
+	public void renderIndexed(int count) {
+		bind();
+		glDrawElements(this.DRAW_MODE, count, GL_UNSIGNED_INT, 0);
+	}
+
+	@Override
+	public void renderArrays(int first, int count) {
+		bind();
+		glDrawArrays(this.DRAW_MODE, first, count);
+	}
+
+	public void GPUMemAlloc() {
+		bind();
+		this.vertexBuffer.GPUMemAlloc(super.vertexBuffer);
+		this.indexBuffer.GPUMemAlloc(super.indexBuffer);
+	}
+
+	public void GPUMemLoad() {
+		bind();
+		this.vertexBuffer.GPUMemLoad(super.vertexBuffer);
+		this.indexBuffer.GPUMemLoad(super.indexBuffer);
+	}
+
+	@Override
+	public void bind() {
+		glBindVertexArray(this.id);
+		this.vertexBuffer.bind(super.vertexBuffer);
+		this.indexBuffer.bind(super.indexBuffer);
 	}
 
 	@Override
@@ -64,46 +107,4 @@ public class OGL_VertexArray implements NativeObject, OGL_Object, Mesh {
 	public int getID() {
 		return this.id;
 	}
-
-	@Override
-	public void uploadSubData(int VBindex, int IBindex) {
-		bind();
-		this.vertexBuffer.uploadSubData(VBindex);
-		this.indexBuffer.uploadSubData(IBindex);
-	}
-
-	@Override
-	public void uploadData() {
-		bind();
-		this.vertexBuffer.uploadData();
-		this.indexBuffer.uploadData();
-	}
-
-	@Override
-	public void drawIndexed(int count) {
-		bind();
-		glDrawElements(this.DRAW_MODE, count, GL_UNSIGNED_INT, 0);
-	}
-
-	public void drawArrays(int first, int count) {
-		bind();
-		glDrawArrays(this.DRAW_MODE, first, count);
-	}
-
-	@Override
-	public void GPULoadMethod(int parameter) {
-		bind();
-		for (OGL_Buffer iBuffer : this.buffers) {
-			iBuffer.GPULoadMethod(parameter);
-		}
-	}
-
-	@Override
-	public void bind() {
-		glBindVertexArray(this.id);
-		for (OGL_Buffer iBuffer : this.buffers) {
-			iBuffer.bind();
-		}
-	}
-
 }
