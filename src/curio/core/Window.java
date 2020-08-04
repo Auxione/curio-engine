@@ -1,6 +1,6 @@
 package core;
 
-import common.utilities.ImageBuffer;
+import common.buffers.ImageBuffer;
 import core.events.WindowListener;
 import vendor.glfw.GLFW_Window;
 

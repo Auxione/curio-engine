@@ -1,6 +1,6 @@
 package core;
 
-import common.utilities.ImageBuffer;
+import common.buffers.ImageBuffer;
 
 public class WindowSettings {
 
