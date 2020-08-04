@@ -8,7 +8,4 @@ public class DebugManagerSettings {
 	public boolean debugDraw = false;
 	public boolean log = false;
 	public boolean printSysInfo = false;
-
-	public boolean registerRenderer2d = false;
-	public boolean registerFrameCounter = false;
 }
