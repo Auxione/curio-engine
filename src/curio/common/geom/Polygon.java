@@ -76,48 +76,6 @@ public class Polygon extends Shape2 {
 		super.reBuild();
 	}
 
-	public void calculateParallels() {
-		int axisIndexCount = 0;
-		if (modifiedPoints.length <= 3) {
-			return;
-		}
-
-		for (int i = 0; i < modifiedPoints.length; i += 2) {
-			for (int other = 0; other < modifiedPoints.length; other += 2) {
-				if (modifiedPoints[i].equals(modifiedPoints[other])) {
-					continue;
-				}
-				if (findParallel(modifiedPoints[i], modifiedPoints[i + 1], modifiedPoints[other],
-						modifiedPoints[other + 1])) {
-					axisIndexCount += 2;
-				}
-			}
-		}
-	}
-
-	private static float epsilon = 0.0001f;
-
-	public static boolean findParallel(Vector2f p11, Vector2f p12, Vector2f p21, Vector2f p22) {
-		Vector2f norm1 = new Vector2f();
-		p11.sub(p12, norm1);
-		norm1.normalize();
-
-		Vector2f norm2 = new Vector2f();
-		p21.sub(p22, norm2);
-		norm2.normalize();
-
-		float dot = norm1.dot(norm2);
-		if (dot <= (1f + epsilon) && dot >= (1f - epsilon)) {
-			return true;
-		}
-
-		if (dot >= -(1f + epsilon) && dot <= -(1f - epsilon)) {
-			return true;
-		}
-
-		return false;
-	}
-
 	public void draw(Renderer2D renderer2d, float width, Color color) {
 		for (int i = 0; i < super.modifiedPoints.length - 1; i++) {
 			LineRenderer.render(renderer2d, width, super.modifiedPoints[i], super.modifiedPoints[i + 1], color);
