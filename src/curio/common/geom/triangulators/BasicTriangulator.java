@@ -11,22 +11,27 @@ package common.geom.triangulators;
  *
  */
 public class BasicTriangulator implements Triangulator {
+	private int[] indices;
+
 	/**
 	 * Calculates and returns index data from vertex.
 	 * 
 	 * @param size the number of vertices in the polygon.
 	 * @return the index data.
 	 */
-	@Override
-	public int[] getIndices(int size) {
-		int[] temp = new int[(size - 2) * 3];
+	public void calculate(int size) {
+		indices = new int[(size - 2) * 3];
 		int index = 0;
-		for (int i = 0; i < temp.length; i += 3) {
-			temp[i] = 0;
-			temp[i + 1] = index + 1;
-			temp[i + 2] = index + 2;
+		for (int i = 0; i < indices.length; i += 3) {
+			indices[i] = 0;
+			indices[i + 1] = index + 1;
+			indices[i + 2] = index + 2;
 			index++;
 		}
-		return temp;
+	}
+
+	@Override
+	public int[] getIndices() {
+		return indices;
 	}
 }

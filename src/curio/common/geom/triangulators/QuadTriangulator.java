@@ -10,7 +10,7 @@ public class QuadTriangulator implements Triangulator {
 	private int[] indices;
 
 	public void calculate(int xSize, int ySize) {
-		indices = new int[xSize * ySize];
+		indices = new int[xSize * ySize * 6];
 		int vertices = 0;
 		int indices = 0;
 
@@ -29,10 +29,11 @@ public class QuadTriangulator implements Triangulator {
 			}
 			vertices++;
 		}
+
 	}
 
 	@Override
-	public int[] getIndices(int size) {
+	public int[] getIndices() {
 		return this.indices;
 	}
 }

@@ -13,5 +13,5 @@ public interface Triangulator {
 	 * @param size the number of vertices in the polygon.
 	 * @return the index data.
 	 */
-	public int[] getIndices(int size);
+	public int[] getIndices();
 }
