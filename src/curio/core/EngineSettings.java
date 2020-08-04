@@ -7,6 +7,9 @@ package core;
  *
  */
 public class EngineSettings {
+	private EngineSettings() {
+	}
+
 	/**
 	 * The OpenGL batch renderer.
 	 * 
@@ -36,14 +39,14 @@ public class EngineSettings {
 	 * The parameter for {@link Renderer2D} object. Default is
 	 * {@link RENDERER_OPENGL}.
 	 */
-	public int renderer = RENDERER_OPENGL;
+	public static int renderer = RENDERER_OPENGL;
 	/**
 	 * The parameter for {@link Window} object. Default is {@link WINDOW_GLFW}.
 	 */
-	public int window = WINDOW_GLFW;
+	public static int window = WINDOW_GLFW;
 	/**
 	 * The parameter for {@link AudioListener} object. Default is
 	 * {@link AUDIO_OPENAL}.
 	 */
-	public int audio = AUDIO_OPENAL;
+	public static int audio = AUDIO_OPENAL;
 }
