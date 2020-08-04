@@ -76,7 +76,7 @@ public class Transform2 implements DebugObject {
 		calculateWorldPosition();
 	}
 
-	public final void updateThenApply(TransformingObject transformingObject) {
+	public final void update(TransformingObject transformingObject) {
 		update();
 		apply(transformingObject);
 	}
@@ -125,5 +125,9 @@ public class Transform2 implements DebugObject {
 				.append(" ang: ").append(this.localRotation.getDEG()).append("][World x: ").append(this.worldPosition.x)
 				.append(" y: ").append(this.worldPosition.y).append("]");
 		return sb.toString();
+	}
+
+	public Matrix3x2f getMatrix() {
+		return transform;
 	}
 }
