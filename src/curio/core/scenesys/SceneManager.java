@@ -109,8 +109,6 @@ public final class SceneManager implements NativeObject {
 	 * @param index : The index of the scene in SceneManager.
 	 */
 	public final void load(Scene scene) {
-		if (!scene.isLoaded())
-			load(scene);
 		if (scene.isLoaded()) {
 			Console.info(this, "Scene with index of " + scene + " reloaded.");
 		}
