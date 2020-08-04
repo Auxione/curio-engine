@@ -13,20 +13,15 @@ public final class SpriteAnimator extends Animator {
 
 	public SpriteAnimator(TextureAtlas textureAtlas, Image image, AnimEquation computeEquation) {
 		super(computeEquation);
-		init(textureAtlas, image);
-	}
-
-	public SpriteAnimator(TextureAtlas textureAtlas, Image image, AnimEquation computeEquation, Looptype looptype) {
-		super(computeEquation);
-		super.looptype = looptype;
-		init(textureAtlas, image);
-	}
-
-	private final void init(TextureAtlas textureAtlas, Image image) {
 		this.textureAtlas = textureAtlas;
 		this.image = image;
 		this.length = this.textureAtlas.size() - 1;
 		this.textureAtlas.set(this.image, 0);
+	}
+
+	public SpriteAnimator(TextureAtlas textureAtlas, Image image, AnimEquation computeEquation, Looptype looptype) {
+		this(textureAtlas, image, computeEquation);
+		super.looptype = looptype;
 	}
 
 	@Override
@@ -42,4 +37,8 @@ public final class SpriteAnimator extends Animator {
 		return image;
 	}
 
+	@Override
+	protected void onReset() {
+		this.textureAtlas.set(this.image, 0);
+	}
 }
