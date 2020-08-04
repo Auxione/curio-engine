@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import common.utilities.ImageBuffer;
+import common.buffers.ImageBuffer;
 
 public class TextureFactory {
 	public static Texture drawRectangle(int width, int height) {
