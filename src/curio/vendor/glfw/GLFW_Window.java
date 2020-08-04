@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFWWindowMaximizeCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
 import common.Console;
-import common.utilities.ImageBuffer;
+import common.buffers.ImageBuffer;
 import common.utilities.NativeObject;
 import common.utilities.NativeObjectManager;
 import core.Window;
@@ -75,12 +75,12 @@ public class GLFW_Window implements Window, NativeObject {
 			glfwSetWindowTitle(this.windowID, windowSettings.title);
 			glfwSetWindowPos(this.windowID, windowSettings.monitorPositionX, windowSettings.monitorPositionY);
 			glfwSetWindowSize(this.windowID, windowSettings.width, windowSettings.height);
-			glfwSetWindowAttrib(this.windowID, GLFW_SAMPLES, windowSettings.samples);
 			glfwSetWindowAttrib(this.windowID, GLFW_RESIZABLE, windowSettings.resizeable ? GL_TRUE : GL_FALSE);
 
 			if (windowSettings.icon != null) {
 				setIcon(windowSettings.icon);
 			}
+			
 			glfwSetWindowMonitor(this.windowID,
 					windowSettings.fullscreen ? monitors.get(windowSettings.fullScreenMonitorIndex) : NULL,
 					windowSettings.monitorPositionX, windowSettings.monitorPositionY, windowSettings.width,
@@ -96,6 +96,7 @@ public class GLFW_Window implements Window, NativeObject {
 		glfwWindowHint(GLFW_REFRESH_RATE, windowSettings.refreshRate);
 		glfwWindowHint(GLFW_SAMPLES, windowSettings.samples);
 		glfwWindowHint(GLFW_RESIZABLE, windowSettings.resizeable ? GL_TRUE : GL_FALSE);
+		
 		if (windowSettings.noAPI) {
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		}
