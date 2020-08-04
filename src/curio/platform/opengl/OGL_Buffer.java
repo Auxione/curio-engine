@@ -4,21 +4,18 @@ import static org.lwjgl.opengl.GL45.*;
 
 import common.utilities.NativeObject;
 import common.utilities.NativeObjectManager;
+import graphics.Mesh.DrawType;
 
 public abstract class OGL_Buffer implements OGL_Object, NativeObject {
 	private int id;
 	private int DRAW_METHOD;
 
-	public enum Method {
-		STATIC_DRAW, DYNAMIC_DRAW, STREAM_DRAW
-	}
-
-	protected OGL_Buffer(Method method) {
-		if (method.equals(Method.DYNAMIC_DRAW)) {
+	protected OGL_Buffer(DrawType drawType) {
+		if (drawType.equals(DrawType.DYNAMIC_DRAW)) {
 			this.DRAW_METHOD = GL_DYNAMIC_DRAW;
 		}
 
-		else if (method.equals(Method.STREAM_DRAW)) {
+		else if (drawType.equals(DrawType.STREAM_DRAW)) {
 			this.DRAW_METHOD = GL_STREAM_DRAW;
 		}
 
