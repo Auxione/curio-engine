@@ -1,6 +1,7 @@
 package graphics;
 
-import common.utilities.ImageBuffer;
+import common.buffers.ImageBuffer;
+import core.EngineSettings;
 import platform.opengl.OGL_Texture;
 
 /**
@@ -10,6 +11,23 @@ import platform.opengl.OGL_Texture;
  *
  */
 public interface Texture {
+
+	public static Texture createInstance(int width, int height, boolean allocate) {
+		switch (EngineSettings.renderer) {
+
+		default:
+			return new OGL_Texture(width, height, allocate);
+		}
+	}
+
+	public static Texture createInstance(ImageBuffer imageBuffer) {
+		switch (EngineSettings.renderer) {
+
+		default:
+			return new OGL_Texture(imageBuffer);
+		}
+	}
+
 	/**
 	 * @return the slot is assigned to the texture slot in gpu.
 	 */
@@ -39,13 +57,5 @@ public interface Texture {
 	 * @return the {@link ImageBuffer} of the texture.
 	 */
 	public ImageBuffer getBuffer();
-
-	public static Texture createInstance() {
-		return new OGL_Texture();
-	}
-
-	public static Texture createInstance(ImageBuffer imageBuffer) {
-		return new OGL_Texture(imageBuffer);
-	}
 
 }
