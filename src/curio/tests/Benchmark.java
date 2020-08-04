@@ -1,4 +1,4 @@
-package sandbox;
+package tests;
 
 import common.Console;
 import core.BasicGame;
@@ -11,10 +11,11 @@ import graphics.renderer2d.Renderer2D;
  * @author Cem05
  */
 public class Benchmark extends BasicGame {
+
 	public static void main(String[] args) {
 		Benchmark perfTest = new Benchmark();
+		perfTest.windowSettings.vsync = false;
 		perfTest.debugManagerSettings.debugPrint = true;
-		perfTest.debugManagerSettings.registerFrameCounter = true;
 		perfTest.debugManagerSettings.log = true;
 		perfTest.run();
 	}
@@ -32,6 +33,7 @@ public class Benchmark extends BasicGame {
 		maxQuadsX = windowSettings.width / resolution;
 		maxQuadsY = windowSettings.height / resolution;
 		Console.info(this, "Rendering " + maxQuadsX * maxQuadsY + " textured triangles per frame.");
+		registerFrameCounter();
 	}
 
 	@Override
@@ -65,10 +67,10 @@ public class Benchmark extends BasicGame {
 	}
 
 	@Override
-	public void render2D(Renderer2D renderer2d) {
+	public void onGUIRender(Renderer2D renderer2d) {
 		for (int x = 0; x < maxQuadsX; x++) {
 			for (int y = 0; y < maxQuadsY; y++) {
-				color.set(index, 255 - index, 255 -index);
+				color.set(index, 255 - index, 255 - index);
 
 				renderer2d.fillRect(x * resolution, y * resolution, resolution, resolution, color);
 			}
