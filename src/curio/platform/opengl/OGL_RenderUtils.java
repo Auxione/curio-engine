@@ -1,17 +1,33 @@
 package platform.opengl;
 
 import static org.lwjgl.system.MemoryUtil.memByteBuffer;
-
+import static org.lwjgl.opengl.GL11.GL_MAX_TEXTURE_SIZE;
+import static org.lwjgl.opengl.GL11.GL_RENDERER;
+import static org.lwjgl.opengl.GL11.GL_VENDOR;
+import static org.lwjgl.opengl.GL11.glGetInteger;
+import static org.lwjgl.opengl.GL11.glGetString;
+import static org.lwjgl.opengl.GL20.GL_MAX_TEXTURE_IMAGE_UNITS;
 import static org.lwjgl.opengl.GL45.*;
 import org.lwjgl.opengl.GLDebugMessageCallbackI;
 import org.lwjgl.system.MemoryUtil;
 
 import common.Console;
+import graphics.RenderUtilities;
 import graphics.renderer2d.Renderer2D;
 
-//TODO: nvidia cards sends debug message for vbo and ibo.Code to ignore those messages from logging.
-public class OGL_RenderUtils {
-	public static void enableDebug(Renderer2D renderer2d) {
+public class OGL_RenderUtils extends RenderUtilities {
+	@Override
+	public void wireFrameMode(int mode) {
+		if (mode == 1) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		} else if (mode == 2) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		} else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+	}
+
+	public void enableDebug(Renderer2D renderer2d) {
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(new GLDebugMessageCallbackI() {
 			@Override
@@ -21,36 +37,23 @@ public class OGL_RenderUtils {
 		}, 0);
 	}
 
-	public static int getplatformMaxCombinedTexUnits() {
-		return glGetInteger(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS);
+	@Override
+	public final String getVendorName() {
+		return glGetString(GL_VENDOR);
 	}
 
-	public static void WireframeMode(int value) {
-		if (value == 1) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		} else if (value == 2) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-		} else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
+	@Override
+	public final String getHardwareName() {
+		return glGetString(GL_RENDERER);
 	}
 
-	public static class Blending {
-		private static int blendingSRC = GL_SRC_ALPHA;
-		private static int blendingDST = GL_ONE_MINUS_SRC_ALPHA;
+	@Override
+	public final int getMaxTextureSlots() {
+		return glGetInteger(GL_MAX_TEXTURE_IMAGE_UNITS);
+	}
 
-		public static void set(boolean value) {
-			if (value == true) {
-				glEnable(GL_BLEND);
-				glBlendFunc(Blending.blendingSRC, Blending.blendingDST);
-			} else {
-				glDisable(GL_BLEND);
-			}
-		}
-
-		public static void setValues(int src, int dest) {
-			Blending.blendingSRC = src;
-			Blending.blendingDST = dest;
-		}
+	@Override
+	public final int getTextureSlotSize() {
+		return glGetInteger(GL_MAX_TEXTURE_SIZE);
 	}
 }
