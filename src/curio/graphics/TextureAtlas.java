@@ -16,7 +16,7 @@ import graphics.renderer2d.Image;
 public class TextureAtlas {
 	private TextureCoordinate[] textureCoordinates;
 	private Texture texture;
- 
+
 	public TextureAtlas(int size) {
 		this.textureCoordinates = new TextureCoordinate[size];
 	}
@@ -31,7 +31,7 @@ public class TextureAtlas {
 			Console.severe(this, "End index cannot be less than start index.");
 			return null;
 		}
-		if (endIndex - startIndex > this.textureCoordinates.length) {
+		if (endIndex - startIndex > this.size()) {
 			Console.severe(this, "Given range is bigger than size.");
 			return null;
 		}
@@ -84,12 +84,12 @@ public class TextureAtlas {
 		return this.texture;
 	}
 
-	public final int size() {
-		return this.textureCoordinates.length;
-	}
-
 	public final void setTexture(Texture texture) {
 		this.texture = texture;
+	}
+
+	public final int size() {
+		return this.textureCoordinates.length;
 	}
 
 	public static TextureAtlas createCellular(Texture texture, Rectangle rectangle) {
