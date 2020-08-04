@@ -2,7 +2,7 @@ package platform.openal;
 
 import static org.lwjgl.openal.AL11.*;
 
-import common.utilities.AudioBuffer;
+import common.buffers.AudioBuffer;
 import common.utilities.NativeObject;
 import common.utilities.NativeObjectManager;
 import core.audio.AudioClip;
