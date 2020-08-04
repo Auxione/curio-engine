@@ -1,6 +1,6 @@
 package core.audio;
 
-import common.utilities.AudioBuffer;
+import common.buffers.AudioBuffer;
 
 public interface AudioClip {
 

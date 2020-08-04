@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import common.Console;
+import common.buffers.AudioBuffer;
+import common.buffers.ImageBuffer;
 import graphics.Texture;
 
 /**
