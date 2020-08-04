@@ -14,7 +14,6 @@ public abstract class Program implements Runnable, EventContainer {
 	public Window window;
 
 	public WindowSettings windowSettings = new WindowSettings();
-	public EngineSettings engineSettings = new EngineSettings();
 
 	private ArrayList<Event> eventList = new ArrayList<Event>();
 
@@ -34,8 +33,8 @@ public abstract class Program implements Runnable, EventContainer {
 	}
 
 	protected void initWindow() {
-		this.window = Window.createInstance(this.engineSettings.window);
-		this.input = Input.createInstance(this.engineSettings.window);
+		this.window = Window.createInstance(EngineSettings.window);
+		this.input = Input.createInstance(EngineSettings.window);
 
 		this.window.run(windowSettings);
 		this.input.run(this.window);
@@ -45,6 +44,10 @@ public abstract class Program implements Runnable, EventContainer {
 		this.input.setListener(EventHandler.getInstance());
 		this.window.setListener(EventHandler.getInstance());
 		Event.set(this.input, this.window);
+	}
+
+	protected void applySettings() {
+		this.window.applySettings(windowSettings);
 	}
 
 	/**
