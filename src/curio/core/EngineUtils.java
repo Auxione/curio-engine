@@ -1,24 +1,15 @@
 package core;
 
 import common.Console;
-import graphics.Graphics;
+import graphics.RenderUtilities;
 
 public class EngineUtils {
 	/**
 	 * Print system info to console.
 	 * 
-	 * @param graphicsContext info to get from
-	 */
-	public static void printSystemInfo(Graphics graphics) {
-		Console.info("GPU: " + graphics.getHardwareName());
-		printSystemInfo();
-	}
-
-	/**
-	 * Print system info to console.
-	 * 
 	 */
 	public static void printSystemInfo() {
+		Console.info("GPU: " + RenderUtilities.getInstance().getHardwareName());
 		Console.info("CPU: " + System.getenv("PROCESSOR_IDENTIFIER") + " " + System.getenv("NUMBER_OF_PROCESSORS")
 				+ " cores.");
 		Console.info("Architecture: " + System.getenv("PROCESSOR_ARCHITECTURE"));
