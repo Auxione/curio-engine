@@ -1,68 +1,78 @@
 package platform.opengl;
 
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL;
 
+import common.buffers.IndexBuffer;
+import common.buffers.VertexBuffer;
+
 import static org.lwjgl.opengl.GL45.*;
+
+import org.joml.Matrix4f;
+
 import graphics.Color;
+import graphics.Mesh.DrawMode;
+import graphics.Mesh.DrawType;
 import graphics.Texture;
 import graphics.TextureCoordinate;
 import graphics.TextureFactory;
 import graphics.renderer2d.Renderer2D;
 import graphics.renderer2d.Vertex2;
-import platform.opengl.OGL_Buffer.Method;
-import platform.opengl.OGL_VertexArray.Mode;
 
-public class OGL_QuadRenderer2D extends Renderer2D {
-	protected int[] textureSamplerIDArray;
-
+public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 	private int quadIndexCount = 0;
 
 	protected OGL_ShaderProgram shaderProgram;
 	protected OGL_VertexArray vertexArrayObject;
-	protected OGL_VertexBuffer vertexBufferObject;
-	protected OGL_IndexBuffer indexBufferObject;
 
 	protected int[] quadIndices = new int[] { 0, 1, 2, 2, 3, 0 };
 	protected Vertex2[] quadVertices = new Vertex2[] { new Vertex2(), new Vertex2(), new Vertex2(), new Vertex2() };
 
-	private Matrix4f orthographicViewingMatrix = new Matrix4f();
-
 	private int debug_QuadCount = 0;
 	private int debug_RenderCallCount = 0;
 
+	private VertexBuffer vertexBuffer;
+	private IndexBuffer indexBuffer;
+
+	private Matrix4f projection = new Matrix4f();
+
 	public OGL_QuadRenderer2D(int width, int height) {
+		super(width, height);
 		init();
-		setRenderSize(width, height);
 	}
 
 	private void init() {
 		GL.createCapabilities();
 		super.init(Color.white, TextureFactory.fillRectangle(2, 2), new TextureCoordinate());
 
-		this.vertexArrayObject = new OGL_VertexArray(Mode.TRIANGLES);
-		this.vertexBufferObject = new OGL_VertexBuffer(Method.STREAM_DRAW, MAXVERTICES * Vertex2.SIZE, Vertex2.BYTES,
-				Vertex2.DATASIZES);
+		this.vertexBuffer = new VertexBuffer(MAXVERTICES * Vertex2.SIZE, Vertex2.BYTES, Vertex2.DATASIZES);
+		this.indexBuffer = new IndexBuffer(MAXINDICES);
 
-		this.indexBufferObject = new OGL_IndexBuffer(Method.STREAM_DRAW, MAXINDICES);
+		this.vertexArrayObject = new OGL_VertexArray(DrawMode.TRIANGLES, DrawType.STREAM_DRAW, this.vertexBuffer,
+				this.indexBuffer);
 
-		this.vertexArrayObject.add(this.vertexBufferObject);
-		this.vertexArrayObject.add(this.indexBufferObject);
-		this.vertexArrayObject.GPULoadMethod(0);
+		this.vertexArrayObject.GPUMemLoad();
 
 		for (int i = 0; i < MAXINDICES; i += 6) {
-			this.indexBufferObject.put(this.quadIndices);
+			indexBuffer.put(this.quadIndices);
 		}
-		this.indexBufferObject.uploadSubData(0);
-		this.shaderProgram = createShader();
 
-		this.shaderProgram.uniforms.setMat4f("u_OrthographicViewingMatrix", this.orthographicViewingMatrix);
-		OGL_RenderUtils.Blending.set(true);
+		this.vertexArrayObject.uploadSubData(-1, 0);
+		this.shaderProgram = createShader();
+		this.projection = new Matrix4f();
+
+		setViewport();
 	}
 
-	public void setRenderSize(float width, float height) {
-		this.orthographicViewingMatrix.ortho2D(0, width, height, 0);
-		setOrthoViewMatrix(this.orthographicViewingMatrix);
+	@Override
+	protected void onSizeChange(int width, int height) {
+		this.projection.identity();
+		this.projection.ortho2D(0, width, height, 0);
+		OGL_ShaderUniforms.setMat4f(this.shaderProgram, "u_ProjectionMatrix", this.projection);
+	}
+
+	private void setViewport() {
+		this.projection.ortho2D(0, getWidth(), getHeight(), 0);
+		OGL_ShaderUniforms.setMat4f(this.shaderProgram, "u_ProjectionMatrix", this.projection);
 	}
 
 	@Override
@@ -82,7 +92,7 @@ public class OGL_QuadRenderer2D extends Renderer2D {
 		Vertex2.setTextureSlot(this.quadVertices, texture);
 		Vertex2.setTexturePositionRect(this.quadVertices, textureCoordinate);
 
-		this.vertexBufferObject.put(this.quadVertices);
+		this.vertexBuffer.put(this.quadVertices);
 		this.quadIndexCount += 6;
 		this.debug_QuadCount++;
 	}
@@ -109,7 +119,7 @@ public class OGL_QuadRenderer2D extends Renderer2D {
 		if (this.quadIndexCount == 0) {
 			return;
 		}
-		this.vertexArrayObject.drawIndexed(this.quadIndexCount);
+		this.vertexArrayObject.renderIndexed(this.quadIndexCount);
 		this.debug_RenderCallCount++;
 	}
 
@@ -121,7 +131,7 @@ public class OGL_QuadRenderer2D extends Renderer2D {
 	@Override
 	public final void endScene() {
 		this.vertexArrayObject.bind();
-		this.vertexBufferObject.uploadSubData(0);
+		this.vertexArrayObject.uploadSubData(0, -1);
 		flush();
 	}
 
@@ -138,13 +148,14 @@ public class OGL_QuadRenderer2D extends Renderer2D {
 		fact.addPassVarOut("vec2", "v_TextureCoordinate");
 		fact.addPassVarOut("float", "v_TextureSlot");
 
-		fact.addUniformVar("mat4", "u_OrthographicViewingMatrix");
+		fact.addUniformVar("mat4", "u_ProjectionMatrix");
 
 		fact.setMainFunction(//
 				"v_TextureSlot = TextureSlot;" //
 						+ "v_TextureCoordinate = TextureCoordinate;" //
 						+ "v_Color = color;" //
-						+ "gl_Position =  u_OrthographicViewingMatrix  * position;");
+						+ "gl_Position =  u_ProjectionMatrix  * position;");
+
 		tempShader.addShader(fact.end());
 
 		fact.start(GL_FRAGMENT_SHADER);
@@ -156,48 +167,23 @@ public class OGL_QuadRenderer2D extends Renderer2D {
 
 		fact.setMainFunction(//
 				"int index = int(v_TextureSlot);"//
-						+ "gl_FragColor = texture2D(u_TextureSampler[index], v_TextureCoordinate) * v_Color;\n");//
+						+ "gl_FragColor = texture2D(u_TextureSampler[index], v_TextureCoordinate) * v_Color;");//
 
 		tempShader.addShader(fact.end());
 
-		tempShader.GPULoadMethod(0);
+		tempShader.GPULoad();
 
-		this.textureSamplerIDArray = new int[TEXTURESAMPLERSIZE];
-		for (int i = 0; i < this.textureSamplerIDArray.length; i++) {
-			this.textureSamplerIDArray[i] = i;
+		int[] textureSamplerIDArray = new int[TEXTURESAMPLERSIZE];
+		for (int i = 0; i < textureSamplerIDArray.length; i++) {
+			textureSamplerIDArray[i] = i;
 		}
-		tempShader.uniforms.setiv("u_TextureSampler", this.textureSamplerIDArray);
-
+		OGL_ShaderUniforms.setiv(tempShader, "u_TextureSampler", textureSamplerIDArray);
 		return tempShader;
-	}
-
-	public final void setOrthoViewMatrix(Matrix4f orthographicViewingMatrix) {
-		this.shaderProgram.uniforms.setMat4f("u_OrthographicViewingMatrix", orthographicViewingMatrix);
 	}
 
 	@Override
 	public final void setBackground(Color color) {
 		glClearColor(color.x, color.y, color.z, color.w);
-	}
-
-	@Override
-	public final String getVendorName() {
-		return glGetString(GL_VENDOR);
-	}
-
-	@Override
-	public final String getHardwareName() {
-		return glGetString(GL_RENDERER);
-	}
-
-	@Override
-	public final int getMaxTextureSlots() {
-		return glGetInteger(GL_MAX_TEXTURE_IMAGE_UNITS);
-	}
-
-	@Override
-	public final int getTextureSlotSize() {
-		return glGetInteger(GL_MAX_TEXTURE_SIZE);
 	}
 
 	@Override
@@ -208,10 +194,4 @@ public class OGL_QuadRenderer2D extends Renderer2D {
 				.append(" render calls.");
 		return sb.toString();
 	}
-
-	@Override
-	public void debugDraw(Renderer2D renderer2d, Color color) {
-	 
-	}
-
 }
