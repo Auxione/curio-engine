@@ -4,7 +4,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import common.utilities.ImageBuffer;
+import common.buffers.ImageBuffer;
 import graphics.Texture;
 import graphics.TextureAtlas;
 import graphics.TextureCoordinate;
