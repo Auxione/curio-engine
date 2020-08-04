@@ -6,6 +6,7 @@ import common.Console;
 import core.GameCycle;
 import core.events.Event;
 import core.events.EventContainer;
+import graphics.renderer2d.Renderer2D;
 
 /**
  * Scene system for curio-engine. The scene has {@link GameCycle} and
@@ -26,7 +27,7 @@ public abstract class Scene implements GameCycle, EventContainer {
 	 * 
 	 * @see SceneManager
 	 */
-	public Scene() {
+	protected Scene() {
 		SceneManager.getInstance().register(this);
 	}
 
@@ -77,6 +78,10 @@ public abstract class Scene implements GameCycle, EventContainer {
 
 	@Override
 	public void lateUpdate() {
+	}
+
+	@Override
+	public void onGUIRender(Renderer2D renderer) {
 	}
 
 	/**
