@@ -19,9 +19,10 @@ public class Rectangle extends Shape2 implements DebugObject {
 	}
 
 	public Rectangle(Rectangle source) {
-		super(source);
+		super(4);
 		this.width = source.width;
 		this.height = source.height;
+		reBuild();
 	}
 
 	@Override
