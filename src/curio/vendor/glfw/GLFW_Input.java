@@ -31,7 +31,6 @@ import core.Input;
 import core.Window;
 import core.events.InputListener;
 
-//TODO: code optimizations
 public class GLFW_Input implements Input, NativeObject {
 	private GLFWMouseButtonCallback mouseButtonCallback;
 	private GLFWScrollCallback mouseScrollCallBack;
@@ -71,6 +70,15 @@ public class GLFW_Input implements Input, NativeObject {
 	}
 
 	private void setCallBack(long window) {
+		glfwSetCursorPosCallback(window, this.cursorPositionCallBack = new GLFWCursorPosCallback() {
+
+			@Override
+			public void invoke(long window, double xpos, double ypos) {
+				GLFW_Input.this.mouseBuffer.put(0, xpos);
+				GLFW_Input.this.mouseBuffer.put(1, ypos);
+			}
+		});
+		
 		glfwSetMouseButtonCallback(window, this.mouseButtonCallback = new GLFWMouseButtonCallback() {
 
 			@Override
@@ -90,21 +98,13 @@ public class GLFW_Input implements Input, NativeObject {
 				}
 			}
 		});
+
 		glfwSetScrollCallback(window, this.mouseScrollCallBack = new GLFWScrollCallback() {
 			@Override
 			public void invoke(long window, double xoffset, double yoffset) {
 				inputListener.mouseWheelChanged((int) xoffset, (int) yoffset);
 				GLFW_Input.this.mouseBuffer.put(2, xoffset);
 				GLFW_Input.this.mouseBuffer.put(3, yoffset);
-			}
-		});
-
-		glfwSetCursorPosCallback(window, this.cursorPositionCallBack = new GLFWCursorPosCallback() {
-
-			@Override
-			public void invoke(long window, double xpos, double ypos) {
-				GLFW_Input.this.mouseBuffer.put(0, xpos);
-				GLFW_Input.this.mouseBuffer.put(1, ypos);
 			}
 		});
 
