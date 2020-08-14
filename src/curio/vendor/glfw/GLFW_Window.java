@@ -3,7 +3,6 @@ package vendor.glfw;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL11.GL_TRUE;
-import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import org.lwjgl.PointerBuffer;
@@ -16,7 +15,7 @@ import org.lwjgl.glfw.GLFWWindowMaximizeCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 
 import common.Console;
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
 import common.utilities.NativeObject;
 import common.utilities.NativeObjectManager;
 import core.Window;
@@ -80,7 +79,7 @@ public class GLFW_Window implements Window, NativeObject {
 			if (windowSettings.icon != null) {
 				setIcon(windowSettings.icon);
 			}
-			
+
 			glfwSetWindowMonitor(this.windowID,
 					windowSettings.fullscreen ? monitors.get(windowSettings.fullScreenMonitorIndex) : NULL,
 					windowSettings.monitorPositionX, windowSettings.monitorPositionY, windowSettings.width,
@@ -96,7 +95,7 @@ public class GLFW_Window implements Window, NativeObject {
 		glfwWindowHint(GLFW_REFRESH_RATE, windowSettings.refreshRate);
 		glfwWindowHint(GLFW_SAMPLES, windowSettings.samples);
 		glfwWindowHint(GLFW_RESIZABLE, windowSettings.resizeable ? GL_TRUE : GL_FALSE);
-		
+
 		if (windowSettings.noAPI) {
 			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		}
@@ -171,11 +170,6 @@ public class GLFW_Window implements Window, NativeObject {
 	}
 
 	@Override
-	public void clear() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	}
-
-	@Override
 	public void swapBuffers() {
 		glfwSwapBuffers(this.windowID);
 	}
@@ -223,7 +217,7 @@ public class GLFW_Window implements Window, NativeObject {
 	}
 
 	@Override
-	public void createCursor(ImageBuffer imageBuffer, int xOffset, int yOffset) {
+	public void createCursor(TextureBuffer imageBuffer, int xOffset, int yOffset) {
 		GLFWImage image = GLFWImage.malloc();
 		GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
 		image.set(imageBuffer.getWidth(), imageBuffer.getHeight(), imageBuffer.getData());
@@ -272,7 +266,7 @@ public class GLFW_Window implements Window, NativeObject {
 	}
 
 	@Override
-	public void setIcon(ImageBuffer imageBuffer) {
+	public void setIcon(TextureBuffer imageBuffer) {
 		GLFWImage image = GLFWImage.malloc();
 		GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
 		image.set(imageBuffer.getWidth(), imageBuffer.getHeight(), imageBuffer.getData());
