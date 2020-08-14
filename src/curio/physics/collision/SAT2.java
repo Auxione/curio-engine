@@ -10,15 +10,15 @@ public class SAT2 {
 		float minB = Float.POSITIVE_INFINITY, maxB = Float.NEGATIVE_INFINITY;
 
 		/* Project first polygon on axis */
-		for (int k = 0; k < obj1.getPoints().length; k++) {
-			float d = obj1.getPoints()[k].dot(axisNorm);
+		for (int k = 0; k < obj1.getDefaultPoints().length; k++) {
+			float d = obj1.getDefaultPoints()[k].dot(axisNorm);
 
 			minA = (float) Math.min(minA, d);
 			maxA = (float) Math.max(maxA, d);
 		}
 		/* Project second polygon on axis */
-		for (int k = 0; k < obj2.getPoints().length; k++) {
-			float d = obj2.getPoints()[k].dot(axisNorm);
+		for (int k = 0; k < obj2.getDefaultPoints().length; k++) {
+			float d = obj2.getDefaultPoints()[k].dot(axisNorm);
 
 			minB = (float) Math.min(minB, d);
 			maxB = (float) Math.max(maxB, d);
@@ -33,16 +33,16 @@ public class SAT2 {
 
 		for (int i = 0; i < indx1.length; i += 2) {
 			if (separatingAxis(obj1, obj2, //
-					obj1.getPoints()[indx1[i]].x - obj1.getPoints()[indx1[i + 1]].x, //
-					obj1.getPoints()[indx1[i]].y - obj1.getPoints()[indx1[i + 1]].y))
+					obj1.getDefaultPoints()[indx1[i]].x - obj1.getDefaultPoints()[indx1[i + 1]].x, //
+					obj1.getDefaultPoints()[indx1[i]].y - obj1.getDefaultPoints()[indx1[i + 1]].y))
 				return false;
 		}
 
 		/* Try to find a separating axis using the second polygon's edges */
 		for (int i = 0; i < indx2.length; i += 2) {
 			if (separatingAxis(obj1, obj2, //
-					obj2.getPoints()[indx2[i]].x - obj2.getPoints()[indx2[i + 1]].x, //
-					obj2.getPoints()[indx2[i]].y - obj2.getPoints()[indx2[i + 1]].y))
+					obj2.getDefaultPoints()[indx2[i]].x - obj2.getDefaultPoints()[indx2[i + 1]].x, //
+					obj2.getDefaultPoints()[indx2[i]].y - obj2.getDefaultPoints()[indx2[i + 1]].y))
 				return false;
 		}
 		return true;
