@@ -3,6 +3,7 @@ package graphics.renderer2d;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
+import common.buffers.VertexBuffer;
 import graphics.Color;
 import graphics.Texture;
 import graphics.TextureCoordinate;
@@ -29,7 +30,7 @@ public class Vertex2 {
 	/**
 	 * Data indices for buffer.
 	 */
-	public static int[] DATASIZES = new int[] { 2, 4, 2, 1 };
+	public static int[] DATAFORMAT = new int[] { 2, 4, 2, 1 };
 	/**
 	 * Position of the vertex.
 	 */
@@ -114,33 +115,18 @@ public class Vertex2 {
 		return setTextureSlot(vertices, texture.getSlot());
 	}
 
-	/**
-	 * Set TextureSlot of given vertices.
-	 * 
-	 * @param vertices : The vertices to modify TextureSlot.
-	 * @param texture  : The texture to get ID.
-	 * @return the modified vertices.
-	 */
-	public static Vertex2[] setTexturePositionRect(Vertex2[] vertices, float x, float y, float width, float height) {
-		if (vertices.length == 4) {
-			vertices[0].textureUV.set(x, y);
-			vertices[1].textureUV.set(x + width, y);
-			vertices[2].textureUV.set(x + width, y + height);
-			vertices[3].textureUV.set(x, y + height);
-		}
-		return vertices;
+	public static void setTexturePositionRect(Vertex2 v1, Vertex2 v2, Vertex2 v3, Vertex2 v4, float x, float y,
+			float width, float height) {
+		v1.textureUV.set(x, y + height);
+		v2.textureUV.set(x + width, y + height);
+		v3.textureUV.set(x + width, y);
+		v4.textureUV.set(x, y);
 	}
 
-	/**
-	 * Set TexturePosition of given vertices to rectangular area.
-	 * 
-	 * @param vertices          : The vertices to modify TexturePosition.
-	 * @param textureCoordinate : The textureCoordinate to get area.
-	 * @return the modified vertices.
-	 */
-	public static Vertex2[] setTexturePositionRect(Vertex2[] vertices, TextureCoordinate textureCoordinate) {
-		return setTexturePositionRect(vertices, textureCoordinate.x,
-				textureCoordinate.y, textureCoordinate.width, textureCoordinate.height);
+	public static void setTexturePositionRect(Vertex2 v1, Vertex2 v2, Vertex2 v3, Vertex2 v4,
+			TextureCoordinate textureCoordinate) {
+		setTexturePositionRect(v1, v2, v3, v4, textureCoordinate.x, textureCoordinate.y, textureCoordinate.width,
+				textureCoordinate.height);
 	}
 
 	@Override
@@ -164,5 +150,25 @@ public class Vertex2 {
 
 		vertexData[8] = vertex.textureSlot;
 		return vertexData;
+	}
+
+	public static void fromBuffer(VertexBuffer buffer, int index, Vertex2 target) {
+		int indexInBuffer = index * Vertex2.SIZE;
+
+		target.position.set(//
+				buffer.get(indexInBuffer), //
+				buffer.get(indexInBuffer + 1));//
+		target.color.set(//
+				buffer.get(indexInBuffer + 2), // red
+				buffer.get(indexInBuffer + 3), // gr
+				buffer.get(indexInBuffer + 4), // bl
+				buffer.get(indexInBuffer + 5));// al
+
+		target.textureUV.set(//
+				buffer.get(indexInBuffer + 6), //
+				buffer.get(indexInBuffer + 7));//
+
+		target.textureSlot = //
+				buffer.get(indexInBuffer + 8);
 	}
 }
