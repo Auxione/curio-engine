@@ -35,6 +35,8 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 
 	private Matrix4f projection = new Matrix4f();
 
+	private Color clearColor;
+
 	public OGL_QuadRenderer2D(int width, int height) {
 		super(width, height);
 		init();
@@ -44,7 +46,7 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 		GL.createCapabilities();
 		super.init(Color.white, TextureFactory.fillRectangle(2, 2), new TextureCoordinate());
 
-		this.vertexBuffer = new VertexBuffer(MAXVERTICES * Vertex2.SIZE, Vertex2.BYTES, Vertex2.DATASIZES);
+		this.vertexBuffer = new VertexBuffer(MAXVERTICES * Vertex2.SIZE, Vertex2.BYTES, Vertex2.DATAFORMAT);
 		this.indexBuffer = new IndexBuffer(MAXINDICES);
 
 		this.vertexArrayObject = new OGL_VertexArray(DrawMode.TRIANGLES, DrawType.STREAM_DRAW, this.vertexBuffer,
@@ -53,7 +55,7 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 		this.vertexArrayObject.GPUMemLoad();
 
 		for (int i = 0; i < MAXINDICES; i += 6) {
-			indexBuffer.put(this.quadIndices);
+			indexBuffer.putIndexed(this.quadIndices);
 		}
 
 		this.vertexArrayObject.uploadSubData(-1, 0);
@@ -66,12 +68,12 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 	@Override
 	protected void onSizeChange(int width, int height) {
 		this.projection.identity();
-		this.projection.ortho2D(0, width, height, 0);
+		this.projection.setOrtho2D(0, width, height, 0);
 		OGL_ShaderUniforms.setMat4f(this.shaderProgram, "u_ProjectionMatrix", this.projection);
 	}
 
 	private void setViewport() {
-		this.projection.ortho2D(0, getWidth(), getHeight(), 0);
+		this.projection.setOrtho2D(0, getWidth(), getHeight(), 0);
 		OGL_ShaderUniforms.setMat4f(this.shaderProgram, "u_ProjectionMatrix", this.projection);
 	}
 
@@ -90,8 +92,9 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 
 		Vertex2.setColor(this.quadVertices, color);
 		Vertex2.setTextureSlot(this.quadVertices, texture);
-		Vertex2.setTexturePositionRect(this.quadVertices, textureCoordinate);
-
+		Vertex2.setTexturePositionRect(this.quadVertices[0], this.quadVertices[1], this.quadVertices[2],
+				this.quadVertices[3], textureCoordinate);
+		
 		this.vertexBuffer.put(this.quadVertices);
 		this.quadIndexCount += 6;
 		this.debug_QuadCount++;
@@ -110,6 +113,7 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 
 	@Override
 	public final void beginScene() {
+		glViewport(0, 0, getWidth(), getHeight());
 		this.quadIndexCount = 0;
 		this.debug_RenderCallCount = 0;
 		this.debug_QuadCount = 0;
@@ -133,6 +137,13 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 		this.vertexArrayObject.bind();
 		this.vertexArrayObject.uploadSubData(0, -1);
 		flush();
+	}
+
+	public void clear() {
+		if (clearColor != null) {
+			glClearColor(this.clearColor.x, this.clearColor.y, this.clearColor.z, this.clearColor.w);
+			glClear(GL_COLOR_BUFFER_BIT);
+		}
 	}
 
 	public final OGL_ShaderProgram createShader() {
@@ -183,7 +194,7 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 
 	@Override
 	public final void setBackground(Color color) {
-		glClearColor(color.x, color.y, color.z, color.w);
+		this.clearColor = color;
 	}
 
 	@Override
