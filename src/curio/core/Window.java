@@ -1,6 +1,6 @@
 package core;
 
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
 import core.events.WindowListener;
 import vendor.glfw.GLFW_Window;
 
@@ -14,11 +14,6 @@ public interface Window {
 	public static Window createInstance(int type) {
 		return new GLFW_Window();
 	}
-
-	/**
-	 * Clears the frame buffer.
-	 */
-	public void clear();
 
 	/**
 	 * swaps screen buffer with the off screen frame buffer.
@@ -65,13 +60,13 @@ public interface Window {
 	public void setCursor(int index);
 
 	/**
-	 * Create new cursor from {@link ImageBuffer}, offset it with given parameters.
+	 * Create new cursor from {@link TextureBuffer}, offset it with given parameters.
 	 * 
-	 * @param imageBuffer : The {@link ImageBuffer} to create cursor.
+	 * @param imageBuffer : The {@link TextureBuffer} to create cursor.
 	 * @param xOffset     : The x offset of the cursor image.
 	 * @param yOffset     : The y offset of the cursor image.
 	 */
-	public void createCursor(ImageBuffer imageBuffer, int xOffset, int yOffset);
+	public void createCursor(TextureBuffer imageBuffer, int xOffset, int yOffset);
 
 	/**
 	 * Bring the window to top.
@@ -127,9 +122,9 @@ public interface Window {
 	/**
 	 * Set application Icon from given ImageBuffer
 	 * 
-	 * @param imageBuffer : the {@link ImageBuffer} to set application icon.
+	 * @param imageBuffer : the {@link TextureBuffer} to set application icon.
 	 */
-	public void setIcon(ImageBuffer imageBuffer);
+	public void setIcon(TextureBuffer imageBuffer);
 
 	/**
 	 * Set {@link WindowListener} to this window.
