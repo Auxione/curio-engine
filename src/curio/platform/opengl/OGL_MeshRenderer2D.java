@@ -1,26 +1,32 @@
 package platform.opengl;
 
 import org.lwjgl.opengl.GL;
-
 import static org.lwjgl.opengl.GL45.*;
+
+import common.math.Transform2;
+import org.joml.Matrix4f;
 
 import graphics.Color;
 import graphics.Mesh;
-import graphics.renderer2d.Camera2;
 import graphics.renderer2d.MeshRenderer2D;
 
 public class OGL_MeshRenderer2D extends MeshRenderer2D implements OGL_Renderer {
-	protected OGL_ShaderProgram shaderProgram;
+	protected static OGL_ShaderProgram shaderProgram;
 
-	public OGL_MeshRenderer2D(Camera2 camera) {
-		super(camera);
+	private Matrix4f calcMatrix = new Matrix4f();
+
+	public OGL_MeshRenderer2D() {
 		GL.createCapabilities();
-		this.shaderProgram = createShader();
+		if (OGL_MeshRenderer2D.shaderProgram == null) {
+			OGL_MeshRenderer2D.shaderProgram = createShader();
+		}
 	}
 
 	@Override
 	public final void bind() {
-		this.shaderProgram.bind();
+		if (OGL_MeshRenderer2D.shaderProgram != null) {
+			OGL_MeshRenderer2D.shaderProgram.bind();
+		}
 	}
 
 	@Override
@@ -28,7 +34,6 @@ public class OGL_MeshRenderer2D extends MeshRenderer2D implements OGL_Renderer {
 		OGL_VertexArray m = (OGL_VertexArray) mesh;
 		m.uploadData();
 		m.GPUMemLoad();
-		
 	}
 
 	@Override
@@ -38,18 +43,16 @@ public class OGL_MeshRenderer2D extends MeshRenderer2D implements OGL_Renderer {
 	}
 
 	@Override
-	public void update() {
-
+	public void update(Matrix4f viewMatrix, Matrix4f projectionMatrix) {
 		bind();
-		OGL_ShaderUniforms.setMat4f(this.shaderProgram, "u_ViewMatrix", this.getCamera().getViewMatrix());
-		OGL_ShaderUniforms.setMat4f(this.shaderProgram, "u_ProjectionMatrix", this.getCamera().getProjectionMatrix());
+		OGL_ShaderUniforms.setMat4f(OGL_MeshRenderer2D.shaderProgram, "u_ViewMatrix", viewMatrix);
+		OGL_ShaderUniforms.setMat4f(OGL_MeshRenderer2D.shaderProgram, "u_ProjectionMatrix", projectionMatrix);
 
-		for (Mesh m : MeshRenderer2D.objectList.keySet()) {
-			OGL_ShaderUniforms.setMat3x2f(this.shaderProgram, "u_ModelMatrix",
-					MeshRenderer2D.objectList.get(m).getMatrix());
-			m.renderIndexed(m.indexBuffer.capacity());
+		for (Mesh m : OGL_MeshRenderer2D.objectList.keySet()) {
+			OGL_ShaderUniforms.setMat4f(OGL_MeshRenderer2D.shaderProgram, "u_ModelMatrix",
+					Transform2.convert(OGL_MeshRenderer2D.objectList.get(m).getMatrix(), calcMatrix));
+			m.renderIndexed();
 		}
-
 	}
 
 	public final OGL_ShaderProgram createShader() {
@@ -67,11 +70,13 @@ public class OGL_MeshRenderer2D extends MeshRenderer2D implements OGL_Renderer {
 
 		fact.addUniformVar("mat4", "u_ProjectionMatrix");
 		fact.addUniformVar("mat4", "u_ViewMatrix");
+		fact.addUniformVar("mat4", "u_ModelMatrix");
+
 		fact.setMainFunction(//
 				"v_TextureSlot = TextureSlot;" //
 						+ "v_TextureCoordinate = TextureCoordinate;" //
 						+ "v_Color = color;" //
-						+ "gl_Position =  u_ProjectionMatrix  * u_ViewMatrix * position;");
+						+ "gl_Position =   u_ProjectionMatrix  * u_ViewMatrix * u_ModelMatrix * position;");
 
 		tempShader.addShader(fact.end());
 
