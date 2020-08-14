@@ -9,7 +9,7 @@ import static org.lwjgl.opengl.GL45.*;
 import org.lwjgl.system.MemoryUtil;
 
 import common.Console;
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
 import common.utilities.NativeObject;
 import common.utilities.NativeObjectManager;
 import graphics.Texture;
@@ -18,7 +18,7 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 	private static int nextTextureSlot = 0;
 	private int ID;
 
-	private ImageBuffer imageBuffer;
+	private TextureBuffer imageBuffer;
 	private int textureSlot = nextTextureSlot;
 
 	private int width, height;
@@ -33,14 +33,14 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 		NativeObjectManager.register(this);
 	}
 
-	public OGL_Texture(ImageBuffer imageBuffer) {
+	public OGL_Texture(TextureBuffer imageBuffer) {
 		this(imageBuffer.getWidth(), imageBuffer.getHeight(), false);
 		this.imageBuffer = imageBuffer;
 		GPUMemLoad(imageBuffer);
 		NativeObjectManager.register(this);
 	}
 
-	public void GPUMemLoad(ImageBuffer imageBuffer) {
+	public void GPUMemLoad(TextureBuffer imageBuffer) {
 		if (OGL_Texture.nextTextureSlot > OGL_Renderer.TEXTURESAMPLERSIZE) {
 			Console.severe(this, "Failed to create textures.");
 			return;
@@ -48,6 +48,7 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 		bind();
 		param();
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		imageBuffer.mirrorHorizontal();
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, imageBuffer.getWidth(), imageBuffer.getHeight(), 0, GL_RGBA,
 				GL_UNSIGNED_BYTE, imageBuffer.getData());
 
@@ -108,7 +109,8 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 	}
 
 	@Override
-	public ImageBuffer getBuffer() {
+	public TextureBuffer getBuffer() {
 		return this.imageBuffer;
 	}
+
 }
