@@ -50,18 +50,13 @@ public class TextureAtlas {
 	}
 
 	public final void map(int index, float x, float y, float width, float height) {
-		map(index, texture.getWidth(), texture.getHeight(), x, y, width, height);
-	}
-
-	public final void map(int index, float textureWidth, float textureHeight, float x, float y, float width,
-			float height) {
 		TextureCoordinate tc = get(index);
-
-		tc.x = x / textureWidth;
-		tc.y = y / textureHeight;
-		tc.width = width / textureWidth;
-		tc.height = height / textureHeight;
+		tc.x = x / texture.getWidth();
+		tc.y = y / texture.getHeight();
+		tc.width = width / texture.getWidth();
+		tc.height = height / texture.getHeight();
 	}
+
 
 	public final void set(Image image, int index) {
 		image.textureCoordinate.set(get(index));
@@ -93,15 +88,16 @@ public class TextureAtlas {
 	}
 
 	public static TextureAtlas createCellular(Texture texture, Rectangle rectangle) {
-		int xCount = (int) (texture.getWidth() / rectangle.width);
-		int yCount = (int) (texture.getHeight() / rectangle.height);
 		float normalizedWidth = rectangle.width / texture.getWidth();
 		float normalizedHeight = rectangle.height / texture.getHeight();
+
+		int xCount = (int) (texture.getWidth() / rectangle.width);
+		int yCount = (int) (texture.getHeight() / rectangle.height);
 
 		TextureAtlas out = new TextureAtlas(texture, xCount * yCount);
 
 		int index = 0;
-		for (int y = 0; y < yCount; y++) {
+		for (int y = yCount - 1; y >= 0; y--) {
 			for (int x = 0; x < xCount; x++) {
 				out.textureCoordinates[index] = new TextureCoordinate(x * normalizedWidth, y * normalizedHeight,
 						normalizedWidth, normalizedHeight);
@@ -110,5 +106,4 @@ public class TextureAtlas {
 		}
 		return out;
 	}
-
 }
