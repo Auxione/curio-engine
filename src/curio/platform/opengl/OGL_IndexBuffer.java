@@ -6,37 +6,37 @@ import common.buffers.IndexBuffer;
 import graphics.Mesh.DrawType;
 
 public class OGL_IndexBuffer extends OGL_Buffer {
-	public OGL_IndexBuffer(DrawType method) {
-		super(method);
+	private int usage;
+
+	public OGL_IndexBuffer(DrawType drawType) {
+		this.usage = OGL_Buffer.getOGLType(drawType);
 	}
 
-	public void uploadSubData(IndexBuffer indexBuffer, int index) {
+	public void uploadSubData(int index, IndexBuffer indexBuffer) {
 		indexBuffer.flip();
-		indexBuffer.resetIndex();
-		bind(indexBuffer);
+		bind();
 		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, index * Integer.BYTES, indexBuffer.getData());
 		indexBuffer.clear();
 	}
 
 	public void uploadData(IndexBuffer indexBuffer) {
 		indexBuffer.flip();
-		indexBuffer.resetIndex();
-		bind(indexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.getData(), super.getDrawMethod());
+		bind();
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.getData(), this.usage);
 		indexBuffer.clear();
 	}
 
 	public void GPUMemAlloc(IndexBuffer indexBuffer) {
-		bind(indexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.capacity(), super.getDrawMethod());
+		bind();
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.capacity(), this.usage);
 	}
 
 	public void GPUMemLoad(IndexBuffer indexBuffer) {
-		bind(indexBuffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.getData(), super.getDrawMethod());
+		bind();
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.getData(), this.usage);
 	}
 
-	public void bind(IndexBuffer indexBuffer) {
+	public void bind() {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, super.getID());
 	}
 }
