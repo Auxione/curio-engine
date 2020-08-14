@@ -11,7 +11,7 @@ import org.joml.Vector2f;
 public interface TransformingObject {
 	public void reBuild();
 
-	public Vector2f[] getPoints();
+	public Vector2f[] getDefaultPoints();
 
 	public int[] getAxisIndices();
 }
