@@ -11,7 +11,7 @@ import graphics.Color;
  *
  */
 public class StringRenderer {
-	private FontData fontData;
+	public FontData fontData;
 	/**
 	 * Maximum textbox width.
 	 */
@@ -100,7 +100,7 @@ public class StringRenderer {
 	 * Renders the given string. Char offsets are applied to every char when
 	 * drawing. If the length of maximum text width specified, tries to clamp it to
 	 * width via creating new line. If the length of maximum text height specified,
-	 * it discards the remaining chars to fit into the box.
+	 * it discards the remaining chars to fit into the given height.
 	 * 
 	 * @param renderer2D           : Renderer2D to use.
 	 * @param fontdata             : The FontData to use.
@@ -127,11 +127,10 @@ public class StringRenderer {
 			int DrawHeight = fontdata.charHeights[string.charAt(i) - FontData.beginChar];
 
 			if ((maxTextWidth > 0 && nextCharPos + DrawWidth >= maxTextWidth)) {
-				nextLineHeight += getLineHeight(fontdata, string.substring(0, i)) + charHorizontalOffset;
+				nextLineHeight += fontdata.getLineHeight(string.substring(0, i)) + charHorizontalOffset;
 				if (maxTextHeight > 0 && nextLineHeight + DrawHeight > maxTextHeight) {
 					return;
 				}
-				nextCharPos = 0;
 				nextCharPos = 0;
 			}
 			if (hightLightIndex > 0 && hightLightIndex == i && hightLightColor != null) {
@@ -192,7 +191,7 @@ public class StringRenderer {
 			int DrawHeight = this.fontData.charHeights[string.charAt(i) - FontData.beginChar];
 
 			if ((maxTextWidth > 0 && nextCharPos + DrawWidth >= maxTextWidth)) {
-				nextLineHeight += getLineHeight(this.fontData, string.substring(0, i)) + charHorizontalOffset;
+				nextLineHeight += FontData.getLineHeight(this.fontData, string.substring(0, i)) + charHorizontalOffset;
 				if (maxTextHeight > 0 && nextLineHeight + DrawHeight > maxTextHeight) {
 					return i;
 				}
@@ -208,58 +207,4 @@ public class StringRenderer {
 		}
 		return -1;
 	}
-
-	/**
-	 * Returns the line width.
-	 * 
-	 * @param string : The string to calculate line width.
-	 * @return the width of the given string.
-	 */
-	public final int getLineWidth(String string) {
-		return getLineWidth(this.fontData, string);
-	}
-
-	/**
-	 * Returns the line height.
-	 * 
-	 * @param string : The string to calculate line height.
-	 * @return the height of the given string.
-	 */
-	public final int getLineHeight(String string) {
-		return getLineHeight(this.fontData, string);
-	}
-
-	/**
-	 * Returns the line width.
-	 * 
-	 * @param string : The string to calculate line width.
-	 * @return the width of the given string.
-	 */
-	public static final int getLineWidth(FontData fontdata, String string) {
-		int out = 0, maxTextWidth = 0;
-		for (int i = 0; i < string.length(); i++) {
-			out += fontdata.charWidths[string.charAt(i)];
-		}
-		if (out > maxTextWidth && maxTextWidth != 0) {
-			out = maxTextWidth;
-		}
-		return out;
-	}
-
-	/**
-	 * Returns the line height.
-	 * 
-	 * @param string : The string to calculate line height.
-	 * @return the height of the given string.
-	 */
-	public static final int getLineHeight(FontData fontdata, String string) {
-		int out = 0;
-		for (int i = 0; i < string.length(); i++) {
-			if (out < fontdata.charHeights[string.charAt(i)]) {
-				out = fontdata.charHeights[string.charAt(i)];
-			}
-		}
-		return out;
-	}
-
 }
