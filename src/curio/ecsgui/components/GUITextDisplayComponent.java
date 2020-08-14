@@ -61,40 +61,40 @@ public class GUITextDisplayComponent extends GUIComponent {
 			alligments[1] = 0;
 			break;
 		case TOPMID:
-			alligments[0] = guiEntity.size.x / 2 - this.stringRenderer.getLineWidth(text) / 2;
+			alligments[0] = guiEntity.size.x / 2 - this.stringRenderer.fontData.getLineWidth(text) / 2;
 			alligments[1] = 0;
 			break;
 		case TOPRIGHT:
-			alligments[0] = guiEntity.size.x - this.stringRenderer.getLineWidth(text);
+			alligments[0] = guiEntity.size.x - this.stringRenderer.fontData.getLineWidth(text);
 			alligments[1] = 0;
 			break;
 
 		case MIDDLELEFT:
 			alligments[0] = 0;
-			alligments[1] = guiEntity.size.y / 2 - this.stringRenderer.getLineHeight(text) / 2;
+			alligments[1] = guiEntity.size.y / 2 - this.stringRenderer.fontData.getLineHeight(text) / 2;
 			break;
 
 		case MIDDLERIGHT:
-			alligments[0] = guiEntity.size.x - this.stringRenderer.getLineWidth(text);
-			alligments[1] = guiEntity.size.y / 2 - this.stringRenderer.getLineHeight(text) / 2;
+			alligments[0] = guiEntity.size.x - this.stringRenderer.fontData.getLineWidth(text);
+			alligments[1] = guiEntity.size.y / 2 - this.stringRenderer.fontData.getLineHeight(text) / 2;
 			break;
 
 		case BOTTOMLEFT:
 			alligments[0] = 0;
-			alligments[1] = guiEntity.size.y - this.stringRenderer.getLineHeight(text);
+			alligments[1] = guiEntity.size.y - this.stringRenderer.fontData.getLineHeight(text);
 			break;
 		case BOTTOMMID:
-			alligments[0] = guiEntity.size.x / 2 - this.stringRenderer.getLineWidth(text) / 2;
-			alligments[1] = guiEntity.size.y - this.stringRenderer.getLineHeight(text);
+			alligments[0] = guiEntity.size.x / 2 - this.stringRenderer.fontData.getLineWidth(text) / 2;
+			alligments[1] = guiEntity.size.y - this.stringRenderer.fontData.getLineHeight(text);
 			break;
 		case BOTTOMRIGHT:
-			alligments[0] = guiEntity.size.x - this.stringRenderer.getLineWidth(text);
-			alligments[1] = guiEntity.size.y - this.stringRenderer.getLineHeight(text);
+			alligments[0] = guiEntity.size.x - this.stringRenderer.fontData.getLineWidth(text);
+			alligments[1] = guiEntity.size.y - this.stringRenderer.fontData.getLineHeight(text);
 			break;
 
 		default:
-			alligments[0] = guiEntity.size.x / 2 - this.stringRenderer.getLineWidth(text) / 2;
-			alligments[1] = guiEntity.size.y / 2 - this.stringRenderer.getLineHeight(text) / 2;
+			alligments[0] = guiEntity.size.x / 2 - this.stringRenderer.fontData.getLineWidth(text) / 2;
+			alligments[1] = guiEntity.size.y / 2 - this.stringRenderer.fontData.getLineHeight(text) / 2;
 			break;
 		}
 	}
