@@ -3,7 +3,7 @@ package common.navigation;
 import java.util.ArrayList;
 
 import common.tilemapsys.TileCoordinate2;
-import common.tilemapsys.TileMap;
+import common.tilemapsys.Tilemap;
 
 /**
  * An {@link TileCoordinate2} for {@link AStarPathfinder}
@@ -11,34 +11,34 @@ import common.tilemapsys.TileMap;
  * @author Mehmet Cem Zarifoglu
  *
  */
-public class Node2D extends TileCoordinate2 {
+public class Node2 extends TileCoordinate2 {
 	private int addedCost;
 	public int gCost = Integer.MAX_VALUE;
 	public int hCost;
 
-	public Node2D parentNode;
+	public Node2 parentNode;
 
-	public Node2D(TileCoordinate2 cellCoordinate) {
+	public Node2(TileCoordinate2 cellCoordinate) {
 		super.set(cellCoordinate.x(), cellCoordinate.y());
 	}
 
-	public Node2D(int x, int y) {
+	public Node2(int x, int y) {
 		super.set(x, y);
 	}
 
-	public Node2D calculateHCost(Node2D node) {
+	public Node2 calculateHCost(Node2 node) {
 		int dx = Math.abs(super.x() - node.y());
 		int dy = Math.abs(super.x() - node.y());
 		this.hCost = (int) Math.sqrt(dx * dx + dy * dy);
 		return this;
 	}
 
-	public int calculateGCost(Node2D parentNode) {
+	public int calculateGCost(Node2 parentNode) {
 		this.gCost = parentNode.gCost + 1;
 		return this.gCost;
 	}
 
-	public Node2D addCost(int cost) {
+	public Node2 addCost(int cost) {
 		this.addedCost += cost;
 		return this;
 	}
@@ -47,12 +47,12 @@ public class Node2D extends TileCoordinate2 {
 		return hCost + gCost + addedCost;
 	}
 
-	public ArrayList<Node2D> getNeighborNodes(TileMap iCellMap) {
-		ArrayList<Node2D> cells = new ArrayList<Node2D>();
-		Node2D n1 = this.getNeighborNode(iCellMap, +1, 0);
-		Node2D n2 = this.getNeighborNode(iCellMap, -1, 0);
-		Node2D n3 = this.getNeighborNode(iCellMap, 0, +1);
-		Node2D n4 = this.getNeighborNode(iCellMap, 0, -1);
+	public ArrayList<Node2> getNeighborNodes(Tilemap iCellMap) {
+		ArrayList<Node2> cells = new ArrayList<Node2>();
+		Node2 n1 = this.getNeighborNode(iCellMap, +1, 0);
+		Node2 n2 = this.getNeighborNode(iCellMap, -1, 0);
+		Node2 n3 = this.getNeighborNode(iCellMap, 0, +1);
+		Node2 n4 = this.getNeighborNode(iCellMap, 0, -1);
 
 		if (n1 != null) {
 			cells.add(n1);
@@ -70,11 +70,11 @@ public class Node2D extends TileCoordinate2 {
 		return cells;
 	}
 
-	public Node2D getNeighborNode(TileMap iCellMap, int offsetx, int offsety) {
+	public Node2 getNeighborNode(Tilemap iCellMap, int offsetx, int offsety) {
 		int px = super.x() + offsetx;
 		int py = super.y() + offsety;
 		if (iCellMap.isInBorders(px, py) == true) {
-			return new Node2D(px, py);
+			return new Node2(px, py);
 		}
 		return null;
 	}
