@@ -30,8 +30,8 @@ public class AABB2 implements DebugObject {
 	}
 
 	public void calculate(TransformingObject transformingObject) {
-		for (int i = 0; i < transformingObject.getPoints().length; i++) {
-			Vector2f vec = transformingObject.getPoints()[i];
+		for (int i = 0; i < transformingObject.getDefaultPoints().length; i++) {
+			Vector2f vec = transformingObject.getDefaultPoints()[i];
 			this.minX = this.minX > vec.x ? this.minX : vec.x;
 			this.minY = this.minY > vec.y ? this.minY : vec.y;
 			this.maxX = this.maxX < vec.x ? this.maxX : vec.x;
