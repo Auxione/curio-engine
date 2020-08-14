@@ -5,21 +5,21 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import common.tilemapsys.TileCoordinate2;
-import common.tilemapsys.TileMap;
+import common.tilemapsys.Tilemap;
 
 /**
- * BreadthFirstSearch is used to detect differences in {@link TileMap}. Search
+ * BreadthFirstSearch is used to detect differences in {@link Tilemap}. Search
  * checks if the current {@link Tile} is in wanted list or banned list then
  * spread to its neighbors.
  * 
  * @author Mehmet Cem Zarifoglu
  */
 
-public class BreadthFirstSearch implements INavigation {
+public class BreadthFirstSearch {
 	private boolean[][] visited;
 	private ArrayList<Integer> bannedIDs;
 	private ArrayList<Integer> wantedIDs;
-	private TileMap iCellMap;
+	private Tilemap iCellMap;
 
 	private TileCoordinate2 startCellCoordinate;
 
@@ -37,12 +37,12 @@ public class BreadthFirstSearch implements INavigation {
 	}
 
 	/**
-	 * Sets {@link TileMap}, {@link Grid2} and layer index of the search.
+	 * Sets {@link Tilemap}, {@link Grid2} and layer index of the search.
 	 * 
 	 * @param cellularMap The CellularMap to search path.
 	 * @param searchLayer The layer to search.
 	 */
-	public BreadthFirstSearch setParameters(TileMap iCellMap, int searchLayer) {
+	public BreadthFirstSearch setParameters(Tilemap iCellMap, int searchLayer) {
 		clear();
 		this.iCellMap = iCellMap;
 		this.visited = new boolean[this.iCellMap.getWidth()][this.iCellMap.getHeight()];
@@ -142,8 +142,7 @@ public class BreadthFirstSearch implements INavigation {
 	 * 
 	 * @return The {@link TileCoordinate2}.
 	 */
-	public TileCoordinate2 getStartCellCoordinate() {
-		// TODO Auto-generated method stub
+	public TileCoordinate2 getStartNode() {
 		return startCellCoordinate;
 	}
 
@@ -152,7 +151,7 @@ public class BreadthFirstSearch implements INavigation {
 	 * 
 	 * @return The ArrayList of {@link TileCoordinate2}s.
 	 */
-	@Override
+
 	public ArrayList<TileCoordinate2> getResult() {
 		return resultCellCoordinates;
 	}
@@ -162,7 +161,7 @@ public class BreadthFirstSearch implements INavigation {
 	 * 
 	 * @return The ArrayList of banned {@link Tile}s.
 	 */
-	@Override
+
 	public ArrayList<TileCoordinate2> getBannedCells() {
 		return bannedCells;
 	}
@@ -172,7 +171,7 @@ public class BreadthFirstSearch implements INavigation {
 	 * 
 	 * @return The ArrayList of searched {@link Tile}s.
 	 */
-	@Override
+
 	public ArrayList<TileCoordinate2> getSearchedCells() {
 		return searchedCells;
 	}

@@ -6,34 +6,33 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 import common.tilemapsys.TileCoordinate2;
-import common.tilemapsys.TileMap;
+import common.tilemapsys.Tilemap;
 import common.tilemapsys.Grid2;
 
 /**
- * AStar Pathfinding algorithm for {@link TileMap}.
+ * AStar Pathfinding algorithm for {@link Tilemap}.
  * 
  * @author Mehmet Cem Zarifoglu
  *
  */
-public class AStarPathfinder implements INavigation {
+public class AStarPathfinder {
 	private HashMap<Integer, Integer> manipulatedIDs;
 	private ArrayList<Integer> bannedIDs;
 
-	private TileMap iCellMap;
+	private Tilemap tilemap;
 
-	private Node2D startNode;
-	private Node2D targetNode;
+	private Node2 startNode;
+	private Node2 targetNode;
 
-	private PriorityQueue<Node2D> openList;
-	private PriorityQueue<Node2D> closedList;
+	private PriorityQueue<Node2> openList;
+	private PriorityQueue<Node2> closedList;
 
-	private Grid2 grid;
 	private Path path;
 	private ArrayList<TileCoordinate2> bannedCells;
 
 	public AStarPathfinder() {
-		this.openList = new PriorityQueue<Node2D>(fCostComparator);
-		this.closedList = new PriorityQueue<Node2D>(fCostComparator);
+		this.openList = new PriorityQueue<Node2>(fCostComparator);
+		this.closedList = new PriorityQueue<Node2>(fCostComparator);
 
 		this.manipulatedIDs = new HashMap<Integer, Integer>();
 		this.bannedIDs = new ArrayList<Integer>();
@@ -43,15 +42,14 @@ public class AStarPathfinder implements INavigation {
 	}
 
 	/**
-	 * Sets current {@link TileMap} and {@link Grid2} to search path.
+	 * Sets current {@link Tilemap} and {@link Grid2} to search path.
 	 * 
 	 * @param cellularMap CellularMap to search path.
 	 * @param grid        Grid to create path.
 	 */
-	public AStarPathfinder setParameters(TileMap iCellMap, Grid2 grid) {
+	public AStarPathfinder setParameters(Tilemap tilemap) {
 		this.clear();
-		this.iCellMap = iCellMap;
-		this.grid = grid;
+		this.tilemap = tilemap;
 		return this;
 	}
 
@@ -79,13 +77,13 @@ public class AStarPathfinder implements INavigation {
 	 * @param targetCellCoordinate The cell to reach target.
 	 */
 	public AStarPathfinder search(TileCoordinate2 startCellCoordinate, TileCoordinate2 targetCellCoordinate) {
-		this.targetNode = new Node2D(targetCellCoordinate);
+		this.targetNode = new Node2(targetCellCoordinate);
 
-		if (iCellMap.isInBorders(startCellCoordinate.x(), startCellCoordinate.y()) == false) {
+		if (tilemap.isInBorders(startCellCoordinate.x(), startCellCoordinate.y()) == false) {
 			return this;
 		}
 
-		else if (iCellMap.isInBorders(targetCellCoordinate.x(), targetCellCoordinate.y()) == false) {
+		else if (tilemap.isInBorders(targetCellCoordinate.x(), targetCellCoordinate.y()) == false) {
 			return this;
 		}
 
@@ -93,13 +91,13 @@ public class AStarPathfinder implements INavigation {
 			return this;
 		}
 
-		this.startNode = new Node2D(startCellCoordinate);
+		this.startNode = new Node2(startCellCoordinate);
 		this.startNode.gCost = 0;
 
 		this.openList.add(this.startNode);
 
 		search_Loop: while (!this.openList.isEmpty()) {
-			Node2D currentNode = this.openList.poll();
+			Node2 currentNode = this.openList.poll();
 
 			if (checkBannedIDList(currentNode) == true) {
 				this.bannedCells.add(currentNode);
@@ -112,7 +110,7 @@ public class AStarPathfinder implements INavigation {
 			}
 			this.closedList.add(currentNode);
 
-			for (Node2D neighborNode : currentNode.getNeighborNodes(iCellMap)) {
+			for (Node2 neighborNode : currentNode.getNeighborNodes(tilemap)) {
 				boolean ifItsInClosedList = checkClosedList(neighborNode);
 				int tentative_gCost = neighborNode.calculateGCost(currentNode);
 
@@ -127,17 +125,16 @@ public class AStarPathfinder implements INavigation {
 				}
 			}
 		}
-		Node2D currentNode = this.targetNode;
 
-		while (currentNode != null) {
-			this.path.add(this.grid.gridToWorld(currentNode));
-			currentNode = currentNode.parentNode;
+		while (this.targetNode != null) {
+			this.path.add(this.targetNode);
+			this.targetNode = this.targetNode.parentNode;
 		}
 		return this;
 	}
 
-	private boolean checkClosedList(Node2D currentNode) {
-		for (Node2D closedListNode : this.closedList) {
+	private boolean checkClosedList(Node2 currentNode) {
+		for (Node2 closedListNode : this.closedList) {
 			if (closedListNode.equals(currentNode) == true) {
 				return true;
 			}
@@ -145,9 +142,9 @@ public class AStarPathfinder implements INavigation {
 		return false;
 	}
 
-	private boolean checkBannedIDList(Node2D currentNode) {
+	private boolean checkBannedIDList(Node2 currentNode) {
 		for (int bannedIDs : this.bannedIDs) {
-			if (this.iCellMap.getCellID(currentNode.x, currentNode.y) == bannedIDs) {
+			if (this.tilemap.getCellID(currentNode.x, currentNode.y) == bannedIDs) {
 				return true;
 			}
 		}
@@ -160,7 +157,7 @@ public class AStarPathfinder implements INavigation {
 	 * @param id        The ID to manipulate cost.
 	 * @param addedCost The cost of the ID.
 	 */
-	public AStarPathfinder addManipulatedID(int id, int addedCost) {
+	public final AStarPathfinder manipulateIDCost(int id, int addedCost) {
 		this.manipulatedIDs.put(id, addedCost);
 		return this;
 	}
@@ -170,13 +167,13 @@ public class AStarPathfinder implements INavigation {
 	 * 
 	 * @param id The ID to ban.
 	 */
-	public AStarPathfinder addBannedID(int id) {
+	public final AStarPathfinder addBannedID(int id) {
 		this.bannedIDs.add(id);
 		return this;
 	}
 
 	private int addCost(TileCoordinate2 cellCoordinate) {
-		int cellID = this.iCellMap.getCellID(cellCoordinate.x, cellCoordinate.y);
+		int cellID = this.tilemap.getCellID(cellCoordinate.x, cellCoordinate.y);
 		for (int id : this.manipulatedIDs.keySet()) {
 			if (cellID == id) {
 				return this.manipulatedIDs.get(id);
@@ -185,20 +182,16 @@ public class AStarPathfinder implements INavigation {
 		return 0;
 	}
 
-	private Comparator<Node2D> fCostComparator = new Comparator<Node2D>() {
+	private Comparator<Node2> fCostComparator = new Comparator<Node2>() {
 		@Override
-		public int compare(Node2D node1, Node2D node2) {
+		public int compare(Node2 node1, Node2 node2) {
 			return Integer.compare(node1.getFCost(), node2.getFCost());
 		};
 	};
-
-	/**
-	 * Returns all the searched {@link Node}s.
-	 * 
-	 * @return The list of {@link Node}.
-	 */
-	public ArrayList<Node2D> getSearchedNodes() {
-		return new ArrayList<Node2D>(this.closedList);
+ 
+	public final Node2[] getSearchedNodes() {
+		Node2[] temp = new Node2[this.closedList.size()];
+		return this.closedList.toArray(temp);
 	}
 
 	/**
@@ -206,7 +199,7 @@ public class AStarPathfinder implements INavigation {
 	 * 
 	 * @return The {@link TileCoordinate2} of start.
 	 */
-	public TileCoordinate2 getStartCellCoordinate() {
+	public final TileCoordinate2 getStartNode() {
 		return this.startNode;
 	}
 
@@ -215,8 +208,7 @@ public class AStarPathfinder implements INavigation {
 	 * 
 	 * @return The {@link TileCoordinate2} of target.
 	 */
-	public TileCoordinate2 getTargetCellCoordinate() {
-		// TODO Auto-generated method stub
+	public final TileCoordinate2 getTargetNode() {
 		return this.targetNode;
 	}
 
@@ -225,41 +217,7 @@ public class AStarPathfinder implements INavigation {
 	 * 
 	 * @return The {@link Path} to the target from start.
 	 */
-	public Path getPath() {
+	public final Path getPath() {
 		return this.path;
 	}
-
-	/**
-	 * This method not used by AStarPthfinder
-	 * 
-	 * @return Null.
-	 */
-	@Override
-	public ArrayList<TileCoordinate2> getResult() {
-		return null;
-	}
-
-	/**
-	 * Returns the list of banned {@link Tile}s.
-	 * 
-	 * @return The list of banned {@link Tile}s.
-	 */
-
-	@Override
-	public ArrayList<TileCoordinate2> getBannedCells() {
-		// TODO Auto-generated method stub
-		return this.bannedCells;
-	}
-
-	/**
-	 * Returns the list of searched {@link Tile}s.
-	 * 
-	 * @return The list of searched {@link Tile}s.
-	 */
-	@Override
-	public ArrayList<TileCoordinate2> getSearchedCells() {
-		// TODO Auto-generated method stub
-		return new ArrayList<TileCoordinate2>(this.closedList);
-	}
-
 }
