@@ -1,6 +1,6 @@
 package graphics;
 
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
 import core.EngineSettings;
 import platform.opengl.OGL_Texture;
 
@@ -20,7 +20,7 @@ public interface Texture {
 		}
 	}
 
-	public static Texture createInstance(ImageBuffer imageBuffer) {
+	public static Texture createInstance(TextureBuffer imageBuffer) {
 		switch (EngineSettings.renderer) {
 
 		default:
@@ -54,8 +54,8 @@ public interface Texture {
 	public int getHeight();
 
 	/**
-	 * @return the {@link ImageBuffer} of the texture.
+	 * @return the {@link TextureBuffer} of the texture.
 	 */
-	public ImageBuffer getBuffer();
+	public TextureBuffer getBuffer();
 
 }
