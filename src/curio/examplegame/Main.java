@@ -47,7 +47,7 @@ public class Main extends SceneBasedGame {
 		setBackground(Color.white);
 
 		// Create new font to display score.
-		FontData.createFontDataFromAWT(new Font("Arial", Font.PLAIN, 20));
+		FontData.createFromAWT(new Font("Arial", Font.PLAIN, 20));
 		new MainMenuScene();
 		new PlayScene();
 
