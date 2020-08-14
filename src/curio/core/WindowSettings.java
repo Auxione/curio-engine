@@ -1,6 +1,6 @@
 package core;
 
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
 
 public class WindowSettings {
 
@@ -67,7 +67,7 @@ public class WindowSettings {
 	/**
 	 * Application icon.
 	 */
-	public ImageBuffer icon = null; // ResourceManager.getInstance().load("src/curio/core/ico.png").asImageBuffer();
+	public TextureBuffer icon = null;
 
 	/**
 	 * Multisampling.
