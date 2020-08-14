@@ -3,6 +3,7 @@ package common.math;
 import java.util.ArrayList;
 
 import org.joml.Matrix3x2f;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
 import core.debug.DebugManager;
@@ -59,7 +60,7 @@ public class Transform2 implements DebugObject {
 
 	public void apply(TransformingObject transformingObject) {
 		transformingObject.reBuild();
-		Vector2f[] points = transformingObject.getPoints();
+		Vector2f[] points = transformingObject.getDefaultPoints();
 
 		for (int i = 0; i < points.length; i++) {
 			this.transform.transformPosition(points[i]);
@@ -130,4 +131,16 @@ public class Transform2 implements DebugObject {
 	public Matrix3x2f getMatrix() {
 		return transform;
 	}
+
+	public static Matrix4f convert(Matrix3x2f transform, Matrix4f target) {
+		target.identity();
+		target.m00(transform.m00());
+		target.m01(transform.m01());
+		target.m10(transform.m10());
+		target.m11(transform.m11());
+		target.m30(transform.m20());
+		target.m31(transform.m21());
+		return target;
+	}
+
 }
