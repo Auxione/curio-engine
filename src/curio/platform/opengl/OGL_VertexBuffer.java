@@ -7,35 +7,36 @@ import graphics.Mesh.DrawType;
 
 public final class OGL_VertexBuffer extends OGL_Buffer {
 	public static final int SHADERLOCATION = 0;
+	private int usage;
 
-	public OGL_VertexBuffer(DrawType method) {
-		super(method);
+	public OGL_VertexBuffer(DrawType drawType) {
+		super();
+		this.usage = OGL_Buffer.getOGLType(drawType);
 	}
 
 	public void uploadData(VertexBuffer vertexBuffer) {
 		vertexBuffer.flip();
 		bind(vertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer.getData(), super.getDrawMethod());
+		glBufferData(GL_ARRAY_BUFFER, vertexBuffer.getData(), this.usage);
 		vertexBuffer.clear();
 	}
 
-	public void uploadSubData(VertexBuffer vertexBuffer, int index) {
+	public void uploadSubData(int index, VertexBuffer vertexBuffer) {
 		vertexBuffer.flip();
 		bind(vertexBuffer);
-		glInvalidateBufferData(this.getID());
-		glBufferSubData(GL_ARRAY_BUFFER, index * vertexBuffer.getBytesPerData(), vertexBuffer.getData());
+		glBufferSubData(GL_ARRAY_BUFFER, index * vertexBuffer.getBytesPerVertex(), vertexBuffer.getData());
 		vertexBuffer.clear();
 	}
 
 	public void GPUMemAlloc(VertexBuffer vertexBuffer) {
 		bind(vertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity(), super.getDrawMethod());
+		glBufferData(GL_ARRAY_BUFFER, vertexBuffer.capacity(), this.usage);
 		initVertexAttribPointer(vertexBuffer);
 	}
 
 	public void GPUMemLoad(VertexBuffer vertexBuffer) {
 		bind(vertexBuffer);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer.getData(), super.getDrawMethod());
+		glBufferData(GL_ARRAY_BUFFER, vertexBuffer.getData(), this.usage);
 		initVertexAttribPointer(vertexBuffer);
 	}
 
@@ -44,7 +45,7 @@ public final class OGL_VertexBuffer extends OGL_Buffer {
 		int currentPosition = 0;
 		for (int i = 0; i < vertexBuffer.getDataSizes().length; i++) {
 			glVertexAttribPointer(SHADERLOCATION + shaderIndex, vertexBuffer.getDataSizes()[i], GL_FLOAT, false,
-					vertexBuffer.getBytesPerData(), currentPosition * Float.BYTES);
+					vertexBuffer.getBytesPerVertex(), currentPosition * Float.BYTES);
 			currentPosition += vertexBuffer.getDataSizes()[i];
 			shaderIndex++;
 		}
