@@ -89,11 +89,11 @@ public abstract class SceneBasedGame extends Program implements Runnable {
 			this.guiRenderer.beginScene();
 			sceneManager.getActiveScene().onGUIRender(this.guiRenderer);
 			DebugManager.draw(this.guiRenderer);
-			
+
 			this.guiRenderer.endScene();
 
 			this.window.swapBuffers();
-			this.window.clear();
+			this.guiRenderer.clear();
 			this.counter.count(window.getTime());
 		}
 		Console.fine("");
