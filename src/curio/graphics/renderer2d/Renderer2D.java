@@ -68,6 +68,8 @@ public abstract class Renderer2D implements DebugPrint {
 	 */
 	public abstract void setBackground(Color color);
 
+	public abstract void clear();
+
 	/**
 	 * Bind the renderer2D.
 	 * 
@@ -445,45 +447,45 @@ public abstract class Renderer2D implements DebugPrint {
 	}
 
 	public final void fill(Rectangle rectangle) {
-		fillQuad(rectangle.modifiedPoints[0], rectangle.modifiedPoints[1], rectangle.modifiedPoints[2],
-				rectangle.modifiedPoints[3], Renderer2D.defaultColor, Renderer2D.defaultWhiteTexture,
+		fillQuad(rectangle.getDefaultPoints()[0], rectangle.getDefaultPoints()[1], rectangle.getDefaultPoints()[2],
+				rectangle.getDefaultPoints()[3], Renderer2D.defaultColor, Renderer2D.defaultWhiteTexture,
 				Renderer2D.defaultTextureCoordinate);
 	}
 
 	public final void fill(Rectangle rectangle, Color color) {
-		fillQuad(rectangle.modifiedPoints[0], rectangle.modifiedPoints[1], rectangle.modifiedPoints[2],
-				rectangle.modifiedPoints[3], color, Renderer2D.defaultWhiteTexture,
+		fillQuad(rectangle.getDefaultPoints()[0], rectangle.getDefaultPoints()[1], rectangle.getDefaultPoints()[2],
+				rectangle.getDefaultPoints()[3], color, Renderer2D.defaultWhiteTexture,
 				Renderer2D.defaultTextureCoordinate);
 	}
 
 	public final void fill(Rectangle rectangle, Color color, Texture texture) {
-		fillQuad(rectangle.modifiedPoints[0], rectangle.modifiedPoints[1], rectangle.modifiedPoints[2],
-				rectangle.modifiedPoints[3], color, texture, Renderer2D.defaultTextureCoordinate);
+		fillQuad(rectangle.getDefaultPoints()[0], rectangle.getDefaultPoints()[1], rectangle.getDefaultPoints()[2],
+				rectangle.getDefaultPoints()[3], color, texture, Renderer2D.defaultTextureCoordinate);
 	}
 
 	public final void fill(Rectangle rectangle, Color color, Texture texture, TextureCoordinate textureCoordinate) {
-		fillQuad(rectangle.modifiedPoints[0], rectangle.modifiedPoints[1], rectangle.modifiedPoints[2],
-				rectangle.modifiedPoints[3], color, texture, textureCoordinate);
+		fillQuad(rectangle.getDefaultPoints()[0], rectangle.getDefaultPoints()[1], rectangle.getDefaultPoints()[2],
+				rectangle.getDefaultPoints()[3], color, texture, textureCoordinate);
 	}
 
 	public final void fill(Triangle triangle) {
-		fillTris(triangle.modifiedPoints[0], triangle.modifiedPoints[1], triangle.modifiedPoints[2],
+		fillTris(triangle.getDefaultPoints()[0], triangle.getDefaultPoints()[1], triangle.getDefaultPoints()[2],
 				Renderer2D.defaultColor, Renderer2D.defaultWhiteTexture, Renderer2D.defaultTextureCoordinate);
 	}
 
 	public final void fill(Triangle triangle, Color color) {
-		fillTris(triangle.modifiedPoints[0], triangle.modifiedPoints[1], triangle.modifiedPoints[2], color,
+		fillTris(triangle.getDefaultPoints()[0], triangle.getDefaultPoints()[1], triangle.getDefaultPoints()[2], color,
 				Renderer2D.defaultWhiteTexture, Renderer2D.defaultTextureCoordinate);
 	}
 
 	public final void fill(Triangle triangle, Color color, Texture texture) {
-		fillTris(triangle.modifiedPoints[0], triangle.modifiedPoints[1], triangle.modifiedPoints[2], color, texture,
-				Renderer2D.defaultTextureCoordinate);
+		fillTris(triangle.getDefaultPoints()[0], triangle.getDefaultPoints()[1], triangle.getDefaultPoints()[2], color,
+				texture, Renderer2D.defaultTextureCoordinate);
 	}
 
 	public final void fill(Triangle triangle, Color color, Texture texture, TextureCoordinate textureCoordinate) {
-		fillTris(triangle.modifiedPoints[0], triangle.modifiedPoints[1], triangle.modifiedPoints[2], color, texture,
-				textureCoordinate);
+		fillTris(triangle.getDefaultPoints()[0], triangle.getDefaultPoints()[1], triangle.getDefaultPoints()[2], color,
+				texture, textureCoordinate);
 	}
 
 	public final int getWidth() {
