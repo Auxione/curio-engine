@@ -64,7 +64,6 @@ public abstract class Program implements Runnable, EventContainer {
 			update();
 
 			this.window.swapBuffers();
-			this.window.clear();
 		}
 		NativeObjectManager.terminateAll();
 	}
