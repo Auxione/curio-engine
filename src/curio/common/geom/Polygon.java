@@ -71,27 +71,27 @@ public class Polygon extends Shape2 {
 	@Override
 	public void reBuild() {
 		for (int i = 0; i < this.defaultPoints.length; i++) {
-			super.modifiedPoints[i].set(this.defaultPoints[i]);
+			super.defaultPoints[i].set(this.defaultPoints[i]);
 		}
 		super.reBuild();
 	}
 
 	public void draw(Renderer2D renderer2d, float width, Color color) {
-		for (int i = 0; i < super.modifiedPoints.length - 1; i++) {
-			LineRenderer.render(renderer2d, width, super.modifiedPoints[i], super.modifiedPoints[i + 1], color);
+		for (int i = 0; i < super.defaultPoints.length - 1; i++) {
+			LineRenderer.render(renderer2d, width, super.defaultPoints[i], super.defaultPoints[i + 1], color);
 		}
-		LineRenderer.render(renderer2d, width, super.modifiedPoints[super.modifiedPoints.length - 1],
-				super.modifiedPoints[0], color);
+		LineRenderer.render(renderer2d, width, super.defaultPoints[super.defaultPoints.length - 1],
+				super.defaultPoints[0], color);
 	}
 
 	@Override
 	public boolean contains(float x, float y) {
-		for (int i = 0; i < super.getPoints().length - 1; i++) {
-			if (Triangle.contains(super.center, super.getPoints()[i], super.getPoints()[i + 1], x, y)) {
+		for (int i = 0; i < super.getDefaultPoints().length - 1; i++) {
+			if (Triangle.contains(super.center, super.getDefaultPoints()[i], super.getDefaultPoints()[i + 1], x, y)) {
 				return true;
 			}
 		}
-		if (Triangle.contains(super.center, super.getPoints()[super.getPoints().length - 1], super.getPoints()[0], x,
+		if (Triangle.contains(super.center, super.getDefaultPoints()[super.getDefaultPoints().length - 1], super.getDefaultPoints()[0], x,
 				y)) {
 			return true;
 		}

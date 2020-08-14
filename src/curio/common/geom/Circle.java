@@ -21,11 +21,11 @@ public class Circle extends Shape2 implements DebugObject {
 
 	@Override
 	public boolean contains(float x, float y) {
-		return contains(super.modifiedPoints[0], radius, x, y);
+		return contains(super.defaultPoints[0], radius, x, y);
 	}
 
 	public static boolean contains(Circle circle, float x, float y) {
-		return contains(circle.getPoints()[0], circle.radius, x, y);
+		return contains(circle.getDefaultPoints()[0], circle.radius, x, y);
 	}
 
 	public static boolean contains(Vector2f position, float radius, float x, float y) {
@@ -33,7 +33,7 @@ public class Circle extends Shape2 implements DebugObject {
 	}
 
 	public static boolean contains(Circle circle1, Circle circle2) {
-		return (circle1.getPoints()[0].distance(circle2.getPoints()[0]) <= (circle1.radius / 2 + circle2.radius / 2));
+		return (circle1.getDefaultPoints()[0].distance(circle2.getDefaultPoints()[0]) <= (circle1.radius / 2 + circle2.radius / 2));
 	}
 
 	@Override
@@ -43,9 +43,9 @@ public class Circle extends Shape2 implements DebugObject {
 
 	@Override
 	public void debugDraw(Renderer2D renderer2d, Color color) {
-		DebugManager.renderString(renderer2d, debugPrint(), color, super.modifiedPoints[0].x,
-				super.modifiedPoints[0].y);
-		renderer2d.fillRectCentered(super.modifiedPoints[0].x, super.modifiedPoints[0].y, 2, 2, color);
+		DebugManager.renderString(renderer2d, debugPrint(), color, super.defaultPoints[0].x,
+				super.defaultPoints[0].y);
+		renderer2d.fillRectCentered(super.defaultPoints[0].x, super.defaultPoints[0].y, 2, 2, color);
 	}
 
 	@Override

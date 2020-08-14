@@ -7,29 +7,29 @@ import physics.RaycastObject;
 import physics.collision.SATObject;
 
 public abstract class Shape2 implements TransformingObject, RaycastObject, SATObject {
-	public Vector2f[] modifiedPoints;
+	protected Vector2f[] defaultPoints;
 	public Vector2f center = new Vector2f();
 
 	public Shape2(int points) {
-		this.modifiedPoints = new Vector2f[points];
-		for (int i = 0; i < this.modifiedPoints.length; i++) {
-			this.modifiedPoints[i] = new Vector2f();
+		this.defaultPoints = new Vector2f[points];
+		for (int i = 0; i < this.defaultPoints.length; i++) {
+			this.defaultPoints[i] = new Vector2f();
 		}
 	}
 
 	public Shape2(Shape2 source) {
-		this.modifiedPoints = new Vector2f[source.modifiedPoints.length];
-		for (int i = 0; i < this.modifiedPoints.length; i++) {
-			this.modifiedPoints[i] = new Vector2f(source.modifiedPoints[i].x, source.modifiedPoints[i].y);
+		this.defaultPoints = new Vector2f[source.defaultPoints.length];
+		for (int i = 0; i < this.defaultPoints.length; i++) {
+			this.defaultPoints[i] = new Vector2f(source.defaultPoints[i].x, source.defaultPoints[i].y);
 		}
 	}
 
 	public final void findCenter() {
 		this.center.zero();
-		for (int i = 0; i < this.modifiedPoints.length; i++) {
-			center.add(modifiedPoints[i]);
+		for (int i = 0; i < this.defaultPoints.length; i++) {
+			center.add(defaultPoints[i]);
 		}
-		this.center.div(this.modifiedPoints.length);
+		this.center.div(this.defaultPoints.length);
 	}
 
 	@Override
@@ -42,8 +42,8 @@ public abstract class Shape2 implements TransformingObject, RaycastObject, SATOb
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(super.toString()).append("\n");
 
-		for (int i = 0; i < modifiedPoints.length; i++) {
-			stringBuilder.append("  ").append(i).append(": ").append(modifiedPoints[i].toString()).append("\n");
+		for (int i = 0; i < defaultPoints.length; i++) {
+			stringBuilder.append("  ").append(i).append(": ").append(defaultPoints[i].toString()).append("\n");
 		}
 		stringBuilder.append(super.toString());
 		return stringBuilder.toString();
@@ -55,8 +55,8 @@ public abstract class Shape2 implements TransformingObject, RaycastObject, SATOb
 	}
 
 	@Override
-	public Vector2f[] getPoints() {
-		return modifiedPoints;
+	public Vector2f[] getDefaultPoints() {
+		return defaultPoints;
 	}
 
 	public abstract boolean contains(float x, float y);

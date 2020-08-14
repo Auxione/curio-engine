@@ -39,7 +39,7 @@ public class Triangle extends Shape2 implements DebugObject {
 
 	@Override
 	public boolean contains(float x, float y) {
-		return contains(super.getPoints()[0], super.getPoints()[1], super.getPoints()[2], x, y);
+		return contains(super.getDefaultPoints()[0], super.getDefaultPoints()[1], super.getDefaultPoints()[2], x, y);
 	}
 
 	public static boolean contains(Triangle triangle, float pointx, float pointy) {
@@ -65,16 +65,16 @@ public class Triangle extends Shape2 implements DebugObject {
 	}
 
 	public void draw(Renderer2D renderer2d, float width, Color color) {
-		LineRenderer.render(renderer2d, width, super.modifiedPoints[0], super.modifiedPoints[1], color);
-		LineRenderer.render(renderer2d, width, super.modifiedPoints[1], super.modifiedPoints[2], color);
-		LineRenderer.render(renderer2d, width, super.modifiedPoints[2], super.modifiedPoints[0], color);
+		LineRenderer.render(renderer2d, width, super.defaultPoints[0], super.defaultPoints[1], color);
+		LineRenderer.render(renderer2d, width, super.defaultPoints[1], super.defaultPoints[2], color);
+		LineRenderer.render(renderer2d, width, super.defaultPoints[2], super.defaultPoints[0], color);
 	}
 
 	@Override
 	public void reBuild() {
-		super.modifiedPoints[0].set(a);
-		super.modifiedPoints[1].set(b);
-		super.modifiedPoints[2].set(c);
+		super.defaultPoints[0].set(a);
+		super.defaultPoints[1].set(b);
+		super.defaultPoints[2].set(c);
 		super.reBuild();
 	}
 
@@ -85,16 +85,16 @@ public class Triangle extends Shape2 implements DebugObject {
 
 	@Override
 	public void debugDraw(Renderer2D renderer2d, Color color) {
-		DebugManager.renderString(renderer2d, debugPrint(), color, super.modifiedPoints[0].x,
-				super.modifiedPoints[0].y);
+		DebugManager.renderString(renderer2d, debugPrint(), color, super.defaultPoints[0].x,
+				super.defaultPoints[0].y);
 	}
 
 	@Override
 	public String debugPrint() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("[x1: ").append(super.modifiedPoints[0].x).append(" y1: ").append(super.modifiedPoints[0].y);
-		sb.append(" x2: ").append(super.modifiedPoints[1].x).append(" y2: ").append(super.modifiedPoints[1].y);
-		sb.append(" x3: ").append(super.modifiedPoints[2].x).append(" y3: ").append(super.modifiedPoints[2].y)
+		sb.append("[x1: ").append(super.defaultPoints[0].x).append(" y1: ").append(super.defaultPoints[0].y);
+		sb.append(" x2: ").append(super.defaultPoints[1].x).append(" y2: ").append(super.defaultPoints[1].y);
+		sb.append(" x3: ").append(super.defaultPoints[2].x).append(" y3: ").append(super.defaultPoints[2].y)
 				.append("]");
 		return sb.toString();
 	}

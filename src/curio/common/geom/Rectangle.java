@@ -27,10 +27,10 @@ public class Rectangle extends Shape2 implements DebugObject {
 
 	@Override
 	public void reBuild() {
-		super.modifiedPoints[0].set(-width / 2, -height / 2);
-		super.modifiedPoints[1].set(+width / 2, -height / 2);
-		super.modifiedPoints[2].set(+width / 2, +height / 2);
-		super.modifiedPoints[3].set(-width / 2, +height / 2);
+		super.defaultPoints[0].set(-width / 2, -height / 2);
+		super.defaultPoints[1].set(+width / 2, -height / 2);
+		super.defaultPoints[2].set(+width / 2, +height / 2);
+		super.defaultPoints[3].set(-width / 2, +height / 2);
 		super.reBuild();
 	}
 
@@ -44,20 +44,20 @@ public class Rectangle extends Shape2 implements DebugObject {
 	}
 
 	public static boolean contains(Rectangle rectangle, float x, float y) {
-		if (Triangle.contains(rectangle.getPoints()[0], rectangle.getPoints()[1], rectangle.getPoints()[2], x, y)) {
+		if (Triangle.contains(rectangle.getDefaultPoints()[0], rectangle.getDefaultPoints()[1], rectangle.getDefaultPoints()[2], x, y)) {
 			return true;
 		}
-		if (Triangle.contains(rectangle.getPoints()[2], rectangle.getPoints()[3], rectangle.getPoints()[0], x, y)) {
+		if (Triangle.contains(rectangle.getDefaultPoints()[2], rectangle.getDefaultPoints()[3], rectangle.getDefaultPoints()[0], x, y)) {
 			return true;
 		}
 		return false;
 	}
 
 	public void draw(Renderer2D renderer2d, float width, Color color) {
-		LineRenderer.render(renderer2d, width, super.modifiedPoints[0], super.modifiedPoints[1], color);
-		LineRenderer.render(renderer2d, width, super.modifiedPoints[1], super.modifiedPoints[2], color);
-		LineRenderer.render(renderer2d, width, super.modifiedPoints[2], super.modifiedPoints[3], color);
-		LineRenderer.render(renderer2d, width, super.modifiedPoints[3], super.modifiedPoints[0], color);
+		LineRenderer.render(renderer2d, width, super.defaultPoints[0], super.defaultPoints[1], color);
+		LineRenderer.render(renderer2d, width, super.defaultPoints[1], super.defaultPoints[2], color);
+		LineRenderer.render(renderer2d, width, super.defaultPoints[2], super.defaultPoints[3], color);
+		LineRenderer.render(renderer2d, width, super.defaultPoints[3], super.defaultPoints[0], color);
 	}
 
 	@Override
@@ -67,8 +67,8 @@ public class Rectangle extends Shape2 implements DebugObject {
 
 	@Override
 	public void debugDraw(Renderer2D renderer2d, Color color) {
-		DebugManager.renderString(renderer2d, debugPrint(), color, super.modifiedPoints[0].x,
-				super.modifiedPoints[0].y);
+		DebugManager.renderString(renderer2d, debugPrint(), color, super.defaultPoints[0].x,
+				super.defaultPoints[0].y);
 	}
 
 	@Override
