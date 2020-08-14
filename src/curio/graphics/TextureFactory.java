@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
 
 public class TextureFactory {
 	public static Texture drawRectangle(int width, int height) {
@@ -15,7 +15,7 @@ public class TextureFactory {
 		Graphics2D graphics = bufferedImage.createGraphics();
 		graphics.setPaint(new Color(255, 255, 255, 255));
 		graphics.drawRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-		return Texture.createInstance(new ImageBuffer(bufferedImage));
+		return Texture.createInstance(new TextureBuffer(bufferedImage));
 	}
 
 	public static Texture fillRectangle(int width, int height) {
@@ -23,7 +23,7 @@ public class TextureFactory {
 		Graphics2D graphics = bufferedImage.createGraphics();
 		graphics.setPaint(new Color(255, 255, 255, 255));
 		graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-		return Texture.createInstance(new ImageBuffer(bufferedImage));
+		return Texture.createInstance(new TextureBuffer(bufferedImage));
 	}
 
 	public static Texture drawOval(int width, int height) {
@@ -31,7 +31,7 @@ public class TextureFactory {
 		Graphics2D graphics = bufferedImage.createGraphics();
 		graphics.setColor(new Color(255, 255, 255, 255));
 		graphics.drawOval(0, 0, bufferedImage.getWidth() - 1, bufferedImage.getHeight() - 1);
-		return Texture.createInstance(new ImageBuffer(bufferedImage));
+		return Texture.createInstance(new TextureBuffer(bufferedImage));
 	}
 
 	public static Texture fillOval(int width, int height) {
@@ -39,7 +39,7 @@ public class TextureFactory {
 		Graphics2D graphics = bufferedImage.createGraphics();
 		graphics.setColor(new Color(255, 255, 255, 255));
 		graphics.fillOval(0, 0, bufferedImage.getWidth() - 1, bufferedImage.getHeight() - 1);
-		return Texture.createInstance(new ImageBuffer(bufferedImage));
+		return Texture.createInstance(new TextureBuffer(bufferedImage));
 	}
 
 	public static BufferedImage createCharImage(Font awtfont, char fontChar) {
