@@ -6,9 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.imageio.ImageIO;
+
 import common.Console;
 import common.buffers.AudioBuffer;
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
 import graphics.Texture;
 
 /**
@@ -81,14 +83,14 @@ public class ResourceManager {
 	 * Create ImageBuffer from last loaded file. "png", "jpeg", "bmp", "wbmp" files
 	 * are supported.
 	 * 
-	 * @return {@link ImageBuffer}
+	 * @return {@link TextureBuffer}
 	 */
-	public ImageBuffer asImageBuffer() {
+	public TextureBuffer asTextureBuffer() {
 		String ext = getExtension(lastFile.getPath());
 		if (ext.contentEquals("png") || ext.contentEquals("jpeg") || ext.contentEquals("bmp")
 				|| ext.contentEquals("wbmp")) {
 			try {
-				return new ImageBuffer().loadFile(lastFile);
+				return new TextureBuffer(ImageIO.read(lastFile));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -105,17 +107,17 @@ public class ResourceManager {
 	 * @return {@link Texture}
 	 */
 	public Texture asTexture() {
-		return Texture.createInstance(asImageBuffer());
+		return Texture.createInstance(asTextureBuffer());
 	}
 
-	/**
-	 * Load file as String.
-	 * 
-	 */
-	public String asString(File file) {
+	public File getFile() {
+		return lastFile;
+	}
+
+	public String asString() {
 		InputStream in;
 		try {
-			in = new FileInputStream(file);
+			in = new FileInputStream(lastFile);
 			String out = new String(in.readAllBytes());
 			in.close();
 			return out;
