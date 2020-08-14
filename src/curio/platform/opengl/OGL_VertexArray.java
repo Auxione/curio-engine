@@ -53,10 +53,10 @@ public class OGL_VertexArray extends Mesh implements NativeObject, OGL_Object {
 	public void uploadSubData(int VBindex, int IBindex) {
 		bind();
 		if (VBindex != -1) {
-			this.vertexBuffer.uploadSubData(super.vertexBuffer, VBindex);
+			this.vertexBuffer.uploadSubData(VBindex, super.vertexBuffer);
 		}
 		if (IBindex != -1) {
-			this.indexBuffer.uploadSubData(super.indexBuffer, IBindex);
+			this.indexBuffer.uploadSubData(IBindex, super.indexBuffer);
 		}
 	}
 
@@ -95,7 +95,7 @@ public class OGL_VertexArray extends Mesh implements NativeObject, OGL_Object {
 	public void bind() {
 		glBindVertexArray(this.id);
 		this.vertexBuffer.bind(super.vertexBuffer);
-		this.indexBuffer.bind(super.indexBuffer);
+		this.indexBuffer.bind();
 	}
 
 	@Override
