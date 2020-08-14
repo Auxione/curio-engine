@@ -5,6 +5,10 @@ import graphics.renderer2d.Renderer2D;
 import platform.opengl.OGL_RenderUtils;
 
 public abstract class RenderUtilities {
+	public enum CullingFace {
+		Front, Back, FrontAndBack
+	}
+
 	private static RenderUtilities instance;
 
 	public static RenderUtilities getInstance() {
@@ -18,10 +22,12 @@ public abstract class RenderUtilities {
 		return instance;
 	}
 
+	public abstract void cullFaces(boolean value, CullingFace face, boolean ccw);
+
 	public abstract void wireFrameMode(int mode);
 
 	public abstract void enableDebug(Renderer2D renderer2d);
-	
+
 	public abstract int getMaxTextureSlots();
 
 	public abstract int getTextureSlotSize();
