@@ -46,7 +46,7 @@ public class DebugManager {
 	}
 
 	public static void createDebugFont(String name) {
-		debugfont = FontData.createFontDataFromAWT(new Font(name, Font.PLAIN, 12));
+		debugfont = FontData.createFromAWT(new Font(name, Font.PLAIN, 12));
 	}
 
 	public static void renderString(Renderer2D renderer2D, String string, Color color, float x, float y) {
