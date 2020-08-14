@@ -2,7 +2,7 @@ package graphics.renderer2d;
 
 import org.joml.Vector2f;
 
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
 import common.geom.Rectangle;
 import common.math.TransformingObject;
 import core.debug.DebugManager;
@@ -22,14 +22,14 @@ public class Image implements TransformingObject, DebugObject {
 		this.shape = new Rectangle(width, height);
 	}
 
-	public Image(ImageBuffer imageBuffer) {
+	public Image(TextureBuffer imageBuffer) {
 		this(imageBuffer.getWidth(), imageBuffer.getHeight());
 		this.texture = Texture.createInstance(imageBuffer);
 	}
 
 	public void render(Renderer2D renderer2d) {
-		renderer2d.fillQuad(shape.modifiedPoints[0], shape.modifiedPoints[1], shape.modifiedPoints[2],
-				shape.modifiedPoints[3], this.tint, this.texture, this.textureCoordinate);
+		renderer2d.fillQuad(shape.getDefaultPoints()[0], shape.getDefaultPoints()[1], shape.getDefaultPoints()[2],
+				shape.getDefaultPoints()[3], this.tint, this.texture, this.textureCoordinate);
 	}
 
 	@Override
@@ -38,8 +38,8 @@ public class Image implements TransformingObject, DebugObject {
 	}
 
 	@Override
-	public Vector2f[] getPoints() {
-		return this.shape.getPoints();
+	public Vector2f[] getDefaultPoints() {
+		return this.shape.getDefaultPoints();
 	}
 
 	@Override
@@ -49,13 +49,13 @@ public class Image implements TransformingObject, DebugObject {
 
 	@Override
 	public void debugDraw(Renderer2D renderer2d, Color color) {
-		DebugManager.renderString(renderer2d, debugPrint(), color, this.shape.getPoints()[0].x,
-				this.shape.getPoints()[0].y);
+		DebugManager.renderString(renderer2d, debugPrint(), color, this.shape.getDefaultPoints()[0].x,
+				this.shape.getDefaultPoints()[0].y);
 
-		LineRenderer.render(renderer2d, 1, this.shape.getPoints()[0], this.shape.getPoints()[1], color);
-		LineRenderer.render(renderer2d, 1, this.shape.getPoints()[1], this.shape.getPoints()[2], color);
-		LineRenderer.render(renderer2d, 1, this.shape.getPoints()[2], this.shape.getPoints()[3], color);
-		LineRenderer.render(renderer2d, 1, this.shape.getPoints()[3], this.shape.getPoints()[0], color);
+		LineRenderer.render(renderer2d, 1, this.shape.getDefaultPoints()[0], this.shape.getDefaultPoints()[1], color);
+		LineRenderer.render(renderer2d, 1, this.shape.getDefaultPoints()[1], this.shape.getDefaultPoints()[2], color);
+		LineRenderer.render(renderer2d, 1, this.shape.getDefaultPoints()[2], this.shape.getDefaultPoints()[3], color);
+		LineRenderer.render(renderer2d, 1, this.shape.getDefaultPoints()[3], this.shape.getDefaultPoints()[0], color);
 	}
 
 	@Override
