@@ -35,7 +35,7 @@ public class TileCoordinate2 extends Vector2i {
 	 * @return cellCoordinate CellCoordinate of the neighbor cell.
 	 */
 
-	public TileCoordinate2 getNeighborTile(TileMap tileMap, int offsetx, int offsety) {
+	public TileCoordinate2 getNeighborTile(Tilemap tileMap, int offsetx, int offsety) {
 		int px = x + offsetx;
 		int py = y + offsety;
 		if (tileMap.isInBorders(px, py) == true) {
@@ -50,7 +50,7 @@ public class TileCoordinate2 extends Vector2i {
 	 * @param cellularMap To check if the neighbor is in the map.
 	 * @return cellCoordinate CellCoordinate of the neighbor cell.
 	 */
-	public TileCoordinate2[] getNeighborTiles(TileMap tileMap) {
+	public TileCoordinate2[] getNeighborTiles(Tilemap tileMap) {
 		TileCoordinate2[] cells = new TileCoordinate2[4];
 		cells[0] = this.getNeighborTile(tileMap, -1, 0);
 		cells[1] = this.getNeighborTile(tileMap, 0, -1);

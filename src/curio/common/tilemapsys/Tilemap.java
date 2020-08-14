@@ -6,7 +6,7 @@ package common.tilemapsys;
  * @author Mehmet Cem Zarifoglu
  *
  */
-public abstract class TileMap {
+public abstract class Tilemap {
 	/**
 	 * Returns the width of the map.
 	 * 
@@ -30,9 +30,11 @@ public abstract class TileMap {
 	 */
 	public abstract boolean isInBorders(int x, int y);
 
-	public boolean isInBorders(TileCoordinate2 tileCoordinate2) {
+	public final boolean isInBorders(TileCoordinate2 tileCoordinate2) {
 		return isInBorders(tileCoordinate2.x, tileCoordinate2.y);
 	}
+
+	public abstract void applyRule(TilemapRule tileMapRule);
 
 	/**
 	 * Returns the ID of the cell in given coordinates. See {@link Tile}
