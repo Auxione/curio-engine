@@ -6,6 +6,7 @@ import common.utilities.NativeObjectManager;
 
 import core.debug.DebugManager;
 import core.debug.DebugManagerSettings;
+import graphics.Color;
 import graphics.renderer2d.Renderer2D;
 
 /**
@@ -66,10 +67,8 @@ public abstract class BasicGame extends Program implements GameCycle {
 
 			this.lateUpdate();
 
-			renderGUI();
+			renderAndSwap();
 
-			this.window.swapBuffers();
-			this.window.clear();
 			this.counter.count(window.getTime());
 		}
 
@@ -78,11 +77,15 @@ public abstract class BasicGame extends Program implements GameCycle {
 		NativeObjectManager.terminateAll();
 	}
 
-	private void renderGUI() {
+	private void renderAndSwap() {
 		this.guiRenderer.bind();
+
 		this.guiRenderer.beginScene();
 		this.onGUIRender(this.guiRenderer);
 		this.guiRenderer.endScene();
+		
+		this.window.swapBuffers();
+		this.guiRenderer.clear();
 	}
 
 	@Override
@@ -104,7 +107,7 @@ public abstract class BasicGame extends Program implements GameCycle {
 	@Override
 	public void onGUIRender(Renderer2D renderer) {
 	}
-	
+
 	public final void registerFrameCounter() {
 		DebugManager.register(this.counter);
 	}
@@ -117,6 +120,15 @@ public abstract class BasicGame extends Program implements GameCycle {
 		super.applySettings();
 		this.guiRenderer.setSize(this.windowSettings.width, this.windowSettings.height);
 		DebugManager.applySettings(debugManagerSettings);
+	}
+
+	/**
+	 * Set the background color for renderer2D.
+	 * 
+	 * @param color
+	 */
+	public final void setBackground(Color color) {
+		this.guiRenderer.setBackground(color);
 	}
 
 	/**
