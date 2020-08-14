@@ -19,14 +19,26 @@ public class IndexBuffer implements NativeObject {
 
 	public IndexBuffer(int[] indices) {
 		this(indices.length);
-		put(indices);
+		putIndexed(indices);
 	}
 
 	public IndexBuffer(Indexable indexable) {
 		this(indexable.getIndexArray());
 	}
 
+	public void put(int index) {
+		this.intBuffer.put(index);
+	}
+
 	public void put(int[] indices) {
+		this.intBuffer.put(indices);
+	}
+
+	public void put(Indexable indexable) {
+		put(indexable.getIndexArray());
+	}
+
+	public void putIndexed(int[] indices) {
 		this.maxIndexNumber = 0;
 		for (int i = 0; i < indices.length; i++) {
 			if (this.maxIndexNumber < indices[i]) {
@@ -38,14 +50,10 @@ public class IndexBuffer implements NativeObject {
 		this.currentIndexOffset += maxIndexNumber + 1;
 	}
 
-	public void put(int index) {
+	public void putIndexed(int index) {
 		index += this.currentIndexOffset;
 		this.intBuffer.put(index);
 		this.currentIndexOffset += 1;
-	}
-
-	public void put(Indexable indexable) {
-		put(indexable.getIndexArray());
 	}
 
 	public IntBuffer getData() {
@@ -54,9 +62,6 @@ public class IndexBuffer implements NativeObject {
 
 	public void clear() {
 		this.intBuffer.clear();
-	}
-
-	public void resetIndex() {
 		this.currentIndexOffset = 0;
 	}
 
