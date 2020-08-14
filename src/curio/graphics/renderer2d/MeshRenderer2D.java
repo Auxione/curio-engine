@@ -2,35 +2,26 @@ package graphics.renderer2d;
 
 import java.util.HashMap;
 
+import org.joml.Matrix4f;
+
 import common.math.Transform2;
 import core.EngineSettings;
 import graphics.Color;
 import graphics.Mesh;
 import platform.opengl.OGL_MeshRenderer2D;
 
-//TODO:
 public abstract class MeshRenderer2D {
 	protected static HashMap<Mesh, Transform2> objectList = new HashMap<Mesh, Transform2>();
-	private Camera2 camera;
 
-	public static MeshRenderer2D createInstance(Camera2 camera) {
+	public static MeshRenderer2D createInstance() {
 		switch (EngineSettings.renderer) {
 
 		default:
-			return new OGL_MeshRenderer2D(camera);
+			return new OGL_MeshRenderer2D();
 		}
 	}
 
-	protected MeshRenderer2D(Camera2 camera) {
-		setCamera(camera);
-	}
-
-	public final void setCamera(Camera2 camera) {
-		this.camera = camera;
-	}
-
-	public final Camera2 getCamera() {
-		return this.camera;
+	protected MeshRenderer2D() {
 	}
 
 	public final void submit(Mesh mesh, Transform2 transform) {
@@ -43,7 +34,7 @@ public abstract class MeshRenderer2D {
 		onRemoveMesh(mesh);
 	}
 
-	public abstract void update();
+	public abstract void update(Matrix4f viewMatrix, Matrix4f projectionMatrix);
 
 	protected abstract void onSubmitMesh(Mesh mesh);
 
