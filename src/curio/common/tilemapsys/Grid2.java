@@ -3,7 +3,7 @@ package common.tilemapsys;
 import org.joml.Vector2f;
 
 /**
- * Grid2 for {@link TileMap}. Stores size of the single tile.
+ * Grid2 for {@link Tilemap}. Stores size of the single tile.
  * 
  * @author Mehmet Cem Zarifoglu
  */
@@ -11,7 +11,8 @@ public class Grid2 {
 	/**
 	 * single tile size in game world.
 	 */
-	protected Vector2f size;
+	public float x, y;
+	public float offsetX, offsetY;
 
 	/**
 	 * Create grid2 object with given parameters as a single cell size.
@@ -19,60 +20,33 @@ public class Grid2 {
 	 * @param x the width of the cell.
 	 * @param y the height of the cell.
 	 */
-	public Grid2(int x, int y) {
-		this.size = new Vector2f(x, y);
+	public Grid2(float x, float y) {
+		this.x = x;
+		this.y = y;
 	}
 
-	/**
-	 * Set current grid size.
-	 * 
-	 * @param x Size of the x axis.
-	 * @param y Size of the y axis.
-	 */
-	public void setSizes(float x, float y) {
-		this.size.set(x, y);
+	public Grid2(float x, float y, float offsetX, float offsetY) {
+		this(x, y);
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
 	}
 
-	/**
-	 * Returns world position of the tile.
-	 * 
-	 * @param cellCoordinate CellCoordinate of the cell.
-	 * @return Cells position in world.
-	 */
-	public Vector2f gridToWorld(TileCoordinate2 cellCoordinate) {
-		return new Vector2f(cellCoordinate.x * this.size.x, cellCoordinate.y * this.size.y);
+	public Vector2f gridToWorld(TileCoordinate2 cellCoordinate, Vector2f target) {
+		return gridToWorld(cellCoordinate.x, cellCoordinate.y, target);
 	}
 
-	/**
-	 * Returns {@link TileCoordinate2} from world position of a point.
-	 * 
-	 * @param x X position of the point.
-	 * @param y Y position of the point.
-	 * 
-	 * @return {@link TileCoordinate2} of the point.
-	 */
-
-	public TileCoordinate2 worldToGrid(float x, float y) {
-		int cx = (int) Math.floor(x / this.size.x);
-		int cy = (int) Math.floor(y / this.size.y);
-		return new TileCoordinate2(cx, cy);
+	public Vector2f gridToWorld(int x, int y, Vector2f target) {
+		return target.set(x * (this.x + this.offsetX), y * (this.y + this.offsetY));
 	}
 
-	/**
-	 * The world width of the single tile.
-	 * 
-	 * @return width of the tile.
-	 */
-	public float getX() {
-		return this.size.x;
+	public TileCoordinate2 worldToGrid(Vector2f input, TileCoordinate2 target) {
+		return worldToGrid(input.x, input.y, target);
 	}
 
-	/**
-	 * The world height of the single tile.
-	 * 
-	 * @return height of the tile.
-	 */
-	public float getY() {
-		return this.size.y;
+	public TileCoordinate2 worldToGrid(float x, float y, TileCoordinate2 target) {
+		target.set(//
+				(int) Math.floor(x / (this.x + this.offsetX)), //
+				(int) Math.floor(y / (this.y + this.offsetY)));
+		return target;
 	}
 }
