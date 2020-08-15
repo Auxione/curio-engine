@@ -9,6 +9,8 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.system.MemoryUtil;
 
+import common.utilities.NativeObject;
+import common.utilities.NativeObjectManager;
 import common.utilities.Resource;
 
 /**
@@ -17,7 +19,7 @@ import common.utilities.Resource;
  * @author Mehmet Cem Zarifoglu
  *
  */
-public class ImageBuffer implements Resource<ImageBuffer> {
+public class TextureBuffer implements Resource<TextureBuffer>, NativeObject {
 	private int width = 0;
 	private int height = 0;
 	private ByteBuffer data;
@@ -26,7 +28,13 @@ public class ImageBuffer implements Resource<ImageBuffer> {
 	 * Create an empty ImageBuffer.
 	 * 
 	 */
-	public ImageBuffer() {
+	public TextureBuffer(int width, int height) {
+		this.width = width;
+		this.height = height;
+		this.data = MemoryUtil.memAlloc(this.width * this.height * 4);
+		NativeObjectManager.register(this);
+
+		System.out.println(this.width + " aa " + this.height);
 	}
 
 	/**
@@ -34,7 +42,8 @@ public class ImageBuffer implements Resource<ImageBuffer> {
 	 * 
 	 * @param src the source of copy.
 	 */
-	public ImageBuffer(ImageBuffer src) {
+	public TextureBuffer(TextureBuffer src) {
+		this(src.width, src.height);
 		replace(src);
 	}
 
@@ -43,7 +52,8 @@ public class ImageBuffer implements Resource<ImageBuffer> {
 	 * 
 	 * @param bufferedImage
 	 */
-	public ImageBuffer(BufferedImage bufferedImage) {
+	public TextureBuffer(BufferedImage bufferedImage) {
+		this(bufferedImage.getWidth(), bufferedImage.getHeight());
 		load(bufferedImage);
 	}
 
@@ -52,33 +62,42 @@ public class ImageBuffer implements Resource<ImageBuffer> {
 	 * 
 	 * @param src the source.
 	 */
-	public void replace(ImageBuffer src) {
+	public void replace(TextureBuffer src) {
 		this.width = src.width;
 		this.height = src.height;
 		this.data.put(src.data);
 	}
 
-	/**
-	 * Load data from {@link BufferedImage}.
-	 * 
-	 */
-	public void load(BufferedImage bufferedImage) {
-		this.width = bufferedImage.getWidth();
-		this.height = bufferedImage.getHeight();
+	private void load(BufferedImage bufferedImage) {
+		for (int h = 0; h < bufferedImage.getHeight(); h++) {
+			for (int w = 0; w < bufferedImage.getWidth(); w++) {
+				int pixel = bufferedImage.getRGB(w, h);
 
-		int[] pixels = new int[this.width * this.height];
-		bufferedImage.getRGB(0, 0, this.width, this.height, pixels, 0, this.width);
-		this.data = MemoryUtil.memAlloc(this.width * this.height * 4);
-
-		for (int h = 0; h < this.height; h++) {
-			for (int w = 0; w < this.width; w++) {
-				int pixel = pixels[h * this.width + w];
 				this.data.put((byte) ((pixel >> 16) & 0xFF));
 				this.data.put((byte) ((pixel >> 8) & 0xFF));
 				this.data.put((byte) (pixel & 0xFF));
 				this.data.put((byte) ((pixel >> 24) & 0xFF));
 			}
 		}
+		this.data.flip();
+	}
+
+	public void setRGBA(int x, int y, int pixel) {
+		int ofs = ((x + (y * this.width)) * 4);
+		this.data.put(ofs, (byte) ((pixel >> 16) & 0xFF));
+		this.data.put(ofs + 1, (byte) ((pixel >> 8) & 0xFF));
+		this.data.put(ofs + 2, (byte) (pixel & 0xFF));
+		this.data.put(ofs + 3, (byte) ((pixel >> 24) & 0xFF));
+	}
+
+	public void mirrorHorizontal() {
+		byte[] tempArray = new byte[this.height * this.width * 4];
+		int size = this.width * 4;
+
+		for (int h = 0; h < this.height; h++) {
+			this.data.get(h * size, tempArray, (this.height - h - 1) * size, size);
+		}
+		this.data.put(0, tempArray);
 		this.data.flip();
 	}
 
@@ -107,8 +126,13 @@ public class ImageBuffer implements Resource<ImageBuffer> {
 	}
 
 	@Override
-	public ImageBuffer loadFile(File file) throws IOException {
+	public TextureBuffer loadFile(File file) throws IOException {
 		load(ImageIO.read(file));
 		return this;
+	}
+
+	@Override
+	public void terminate() {
+		MemoryUtil.memFree(data);
 	}
 }
