@@ -18,8 +18,8 @@ public abstract class Event {
 	 * activate or disable the event.
 	 */
 	public boolean active = true;
-	private static Input input;
-	private static Window window;
+	public static Input input;
+	public static Window window;
 
 	/**
 	 * Create new event then register it to {@link EventContainer}.
@@ -85,7 +85,7 @@ public abstract class Event {
 	 * @param y : y axis of the wheel.
 	 * @return true if event consumed.
 	 */
-	public boolean mouseWheelChanged(int x, int y) {
+	protected boolean mouseWheelChanged(int x, int y) {
 		return false;
 	};
 
@@ -100,7 +100,7 @@ public abstract class Event {
 	 * @param y      : y position of the mouse in application window.
 	 * @return true if event consumed.
 	 */
-	public boolean mousePressed(int button, int x, int y) {
+	protected boolean mousePressed(int button, int x, int y) {
 		return false;
 	};
 
@@ -115,7 +115,7 @@ public abstract class Event {
 	 * @param y      : y position of the mouse in application window.
 	 * @return true if event consumed.
 	 */
-	public boolean mouseReleased(int button, int x, int y) {
+	protected boolean mouseReleased(int button, int x, int y) {
 		return false;
 	};
 
@@ -132,7 +132,7 @@ public abstract class Event {
 	 * @param y      : y position of the mouse in application window.
 	 * @return true if event consumed.
 	 */
-	public boolean mouseRepeat(int button, int x, int y) {
+	protected boolean mouseRepeat(int button, int x, int y) {
 		return false;
 	};
 
@@ -146,7 +146,7 @@ public abstract class Event {
 	 * @param c   : The character of the pressed key.
 	 * @return true if event consumed.
 	 */
-	public boolean keyPressed(int key, char c) {
+	protected boolean keyPressed(int key, char c) {
 		return false;
 	};
 
@@ -160,7 +160,7 @@ public abstract class Event {
 	 * @param c   : The character of the released key.
 	 * @return true if event consumed.
 	 */
-	public boolean keyReleased(int key, char c) {
+	protected boolean keyReleased(int key, char c) {
 		return false;
 	};
 
@@ -176,7 +176,7 @@ public abstract class Event {
 	 * @param c   : The character of the repeated key.
 	 * @return true if event consumed.
 	 */
-	public boolean keyRepeat(int key, char c) {
+	protected boolean keyRepeat(int key, char c) {
 		return false;
 	}
 
@@ -189,7 +189,7 @@ public abstract class Event {
 	 * @see Window
 	 * @return true if event consumed.
 	 */
-	public boolean windowIconified() {
+	protected boolean windowIconified() {
 		return false;
 	}
 
@@ -201,7 +201,7 @@ public abstract class Event {
 	 * @see Window
 	 * @return true if event consumed.
 	 */
-	public boolean windowMaximized() {
+	protected boolean windowMaximized() {
 		return false;
 	}
 
@@ -214,7 +214,7 @@ public abstract class Event {
 	 * @param focus : false when window focus lost.
 	 * @return true if event consumed.
 	 */
-	public boolean windowFocus(boolean focus) {
+	protected boolean windowFocus(boolean focus) {
 		return false;
 	}
 
@@ -229,7 +229,7 @@ public abstract class Event {
 	 * @param height : The new height of the window.
 	 * @return true if event consumed.
 	 */
-	public boolean windowResized(int width, int height) {
+	protected boolean windowResized(int width, int height) {
 		return false;
 	}
 
@@ -243,7 +243,7 @@ public abstract class Event {
 	 * @param paths : The paths of the each dropped item.
 	 * @return true if event consumed.
 	 */
-	public boolean windowDrop(String[] paths) {
+	protected boolean windowDrop(String[] paths) {
 		return false;
 	}
 }
