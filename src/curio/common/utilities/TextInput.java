@@ -1,8 +1,6 @@
 package common.utilities;
 
 import core.Input;
-import core.events.Event;
-import core.events.EventContainer;
 
 /**
  * TextInput class for capturing keys in runtime to create string.
@@ -10,8 +8,7 @@ import core.events.EventContainer;
  * @author Mehmet Cem Zarifoglu
  *
  */
-public class TextInput extends Event {
-	private Input input;
+public class TextInput {
 	private Runnable runnable;
 
 	private String value = "";
@@ -25,13 +22,15 @@ public class TextInput extends Event {
 
 	private int cursorIndex;
 
+	private Input input;
+
 	/**
 	 * Create new TextInput.
 	 * 
 	 * @param input
 	 */
-	public TextInput(EventContainer eventContainer) {
-		super(eventContainer);
+	public TextInput(Input input) {
+		this.input = input;
 	}
 
 	/**
@@ -40,13 +39,12 @@ public class TextInput extends Event {
 	 * 
 	 * @param input
 	 */
-	public TextInput(EventContainer eventContainer, Runnable runnable) {
-		super(eventContainer);
+	public TextInput(Input input, Runnable runnable) {
+		this(input);
 		this.runnable = runnable;
 	}
 
-	@Override
-	public boolean keyPressed(int key, char c) {
+	public final boolean onKeyPressed(int key, char c) {
 		if (key == Input.KEY_RIGHT_CONTROL || key == Input.KEY_LEFT_CONTROL) {
 			this.key_Control = true;
 		} else if (key == Input.KEY_RIGHT_SHIFT || key == Input.KEY_LEFT_SHIFT) {
@@ -114,8 +112,7 @@ public class TextInput extends Event {
 		return false;
 	}
 
-	@Override
-	public boolean keyRepeat(int key, char c) {
+	public final boolean onKeyRepeat(int key, char c) {
 		if (key == Input.KEY_LEFT) {// move cursor to left
 			if (this.cursorIndex > 0) {
 				this.cursorIndex--;
@@ -157,8 +154,7 @@ public class TextInput extends Event {
 		return false;
 	}
 
-	@Override
-	public boolean keyReleased(int key, char c) {
+	public final boolean onKeyReleased(int key, char c) {
 		if (key == Input.KEY_RIGHT_CONTROL || key == Input.KEY_LEFT_CONTROL) {
 			this.key_Control = true;
 			return true;
