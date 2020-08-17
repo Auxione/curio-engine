@@ -19,12 +19,12 @@ import graphics.renderer2d.Renderer2D;
  *
  */
 public class Transform2 implements DebugObject {
-	public Vector2f worldPosition = new Vector2f();
-	public Vector2f direction = new Vector2f(1, 0);
+	public final Vector2f worldPosition = new Vector2f();
+	public final Vector2f direction = new Vector2f(1, 0);
 
-	public Vector2f localPosition = new Vector2f();
-	public Rotationf localRotation = new Rotationf();
-	public Vector2f localScale = new Vector2f(1, 1);
+	public final Vector2f localPosition = new Vector2f();
+	public final Rotationf localRotation = new Rotationf();
+	public final Vector2f localScale = new Vector2f(1, 1);
 
 	private Matrix3x2f transform = new Matrix3x2f();
 
