@@ -33,8 +33,6 @@ public class TextureBuffer implements Resource<TextureBuffer>, NativeObject {
 		this.height = height;
 		this.data = MemoryUtil.memAlloc(this.width * this.height * 4);
 		NativeObjectManager.register(this);
-
-		System.out.println(this.width + " aa " + this.height);
 	}
 
 	/**
