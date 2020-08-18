@@ -81,7 +81,7 @@ public abstract class BasicGame extends Program implements GameCycle {
 		this.guiRenderer.bind();
 
 		this.guiRenderer.beginScene();
-		this.onGUIRender(this.guiRenderer);
+		this.onScreenRender(this.guiRenderer);
 		this.guiRenderer.endScene();
 		
 		this.window.swapBuffers();
@@ -105,7 +105,7 @@ public abstract class BasicGame extends Program implements GameCycle {
 	}
 
 	@Override
-	public void onGUIRender(Renderer2D renderer) {
+	public void onScreenRender(Renderer2D renderer) {
 	}
 
 	public final void registerFrameCounter() {
