@@ -20,11 +20,11 @@ public interface Texture {
 		}
 	}
 
-	public static Texture createInstance(TextureBuffer imageBuffer) {
+	public static Texture createInstance(TextureBuffer textureBuffer) {
 		switch (EngineSettings.renderer) {
 
 		default:
-			return new OGL_Texture(imageBuffer);
+			return new OGL_Texture(textureBuffer);
 		}
 	}
 
@@ -47,6 +47,8 @@ public interface Texture {
 	 * @return the width of the texture.
 	 */
 	public int getWidth();
+
+	public void replace(TextureBuffer textureBuffer);
 
 	/**
 	 * @return the height of the texture.

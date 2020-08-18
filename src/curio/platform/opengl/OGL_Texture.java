@@ -18,7 +18,7 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 	private static int nextTextureSlot = 0;
 	private int ID;
 
-	private TextureBuffer imageBuffer;
+	private TextureBuffer textureBuffer;
 	private int textureSlot = nextTextureSlot;
 
 	private int width, height;
@@ -33,14 +33,14 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 		NativeObjectManager.register(this);
 	}
 
-	public OGL_Texture(TextureBuffer imageBuffer) {
-		this(imageBuffer.getWidth(), imageBuffer.getHeight(), false);
-		this.imageBuffer = imageBuffer;
-		GPUMemLoad(imageBuffer);
+	public OGL_Texture(TextureBuffer textureBuffer) {
+		this(textureBuffer.getWidth(), textureBuffer.getHeight(), false);
+		this.textureBuffer = textureBuffer;
+		GPUMemLoad(textureBuffer);
 		NativeObjectManager.register(this);
 	}
 
-	public void GPUMemLoad(TextureBuffer imageBuffer) {
+	public void GPUMemLoad(TextureBuffer textureBuffer) {
 		if (OGL_Texture.nextTextureSlot > OGL_Renderer.TEXTURESAMPLERSIZE) {
 			Console.severe(this, "Failed to create textures.");
 			return;
@@ -48,9 +48,10 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 		bind();
 		param();
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-		imageBuffer.mirrorHorizontal();
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, imageBuffer.getWidth(), imageBuffer.getHeight(), 0, GL_RGBA,
-				GL_UNSIGNED_BYTE, imageBuffer.getData());
+		textureBuffer.mirrorHorizontal();
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureBuffer.getWidth(), textureBuffer.getHeight(), 0, GL_RGBA,
+				GL_UNSIGNED_BYTE, textureBuffer.getData());
 
 		OGL_Texture.nextTextureSlot += 1;
 		glBindTextureUnit(this.textureSlot, this.getID());
@@ -75,6 +76,13 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
+
+	@Override
+	public void replace(TextureBuffer textureBuffer) {
+		this.textureBuffer.terminate();
+		this.textureBuffer = textureBuffer;
+		GPUMemLoad(textureBuffer);
 	}
 
 	@Override
@@ -110,7 +118,7 @@ public class OGL_Texture implements Texture, NativeObject, OGL_Object {
 
 	@Override
 	public TextureBuffer getBuffer() {
-		return this.imageBuffer;
+		return this.textureBuffer;
 	}
 
 }
