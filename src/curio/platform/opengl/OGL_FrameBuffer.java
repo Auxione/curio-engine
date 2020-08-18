@@ -26,7 +26,7 @@ public class OGL_FrameBuffer extends FrameBuffer implements OGL_Object, NativeOb
 
 	public void clear(Color color) {
 		if (color != null) {
-			glClearColor(color.x, color.y, color.z, color.w);
+			glClearColor(color.r, color.g, color.b, color.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
 	}

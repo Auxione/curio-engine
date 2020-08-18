@@ -1,7 +1,6 @@
 package graphics.renderer2d;
 
 import org.joml.Vector2f;
-import org.joml.Vector4f;
 
 import common.buffers.VertexBuffer;
 import graphics.Color;
@@ -38,7 +37,7 @@ public class Vertex2 {
 	/**
 	 * Color of the vertex.
 	 */
-	public Vector4f color = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+	public Color color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 	/**
 	 * texturePosition of the vertex.
 	 */
@@ -132,18 +131,18 @@ public class Vertex2 {
 	@Override
 	public String toString() {
 		return "pos: " + this.position.x + "-" + this.position.y + " |texPos: " + this.textureUV.x + "-"
-				+ this.textureUV.y + " |Color: " + this.color.x + "-" + this.color.y + "-" + this.color.z + "-"
-				+ this.color.w + " |TexID: " + textureSlot;
+				+ this.textureUV.y + " |Color: " + this.color.getRed() + "-" + this.color.getGreen() + "-"
+				+ this.color.getBlue() + "-" + this.color.getAlpha() + " |TexID: " + textureSlot;
 	}
 
 	public static float[] toArray(Vertex2 vertex) {
 		vertexData[0] = vertex.position.x;
 		vertexData[1] = vertex.position.y;
 
-		vertexData[2] = vertex.color.x;
-		vertexData[3] = vertex.color.y;
-		vertexData[4] = vertex.color.z;
-		vertexData[5] = vertex.color.w;
+		vertexData[2] = vertex.color.r;
+		vertexData[3] = vertex.color.g;
+		vertexData[4] = vertex.color.b;
+		vertexData[5] = vertex.color.a;
 
 		vertexData[6] = vertex.textureUV.x;
 		vertexData[7] = vertex.textureUV.y;

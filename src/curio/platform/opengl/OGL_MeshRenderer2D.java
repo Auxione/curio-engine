@@ -105,7 +105,7 @@ public class OGL_MeshRenderer2D extends MeshRenderer2D implements OGL_Renderer {
 
 	@Override
 	public final void setBackground(Color color) {
-		glClearColor(color.x, color.y, color.z, color.w);
+		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
 }

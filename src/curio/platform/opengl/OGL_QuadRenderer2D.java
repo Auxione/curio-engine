@@ -94,7 +94,7 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 		Vertex2.setTextureSlot(this.quadVertices, texture);
 		Vertex2.setTexturePositionRect(this.quadVertices[0], this.quadVertices[1], this.quadVertices[2],
 				this.quadVertices[3], textureCoordinate);
-		
+
 		this.vertexBuffer.put(this.quadVertices);
 		this.quadIndexCount += 6;
 		this.debug_QuadCount++;
@@ -141,7 +141,7 @@ public class OGL_QuadRenderer2D extends Renderer2D implements OGL_Renderer {
 
 	public void clear() {
 		if (clearColor != null) {
-			glClearColor(this.clearColor.x, this.clearColor.y, this.clearColor.z, this.clearColor.w);
+			glClearColor(this.clearColor.r, this.clearColor.g, this.clearColor.b, this.clearColor.a);
 			glClear(GL_COLOR_BUFFER_BIT);
 		}
 	}
