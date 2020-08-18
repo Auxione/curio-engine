@@ -17,12 +17,12 @@ public abstract class Mesh {
 		TRIANGLES, LINES, LINE_STRIP, LINE_LOOP, TRIANGLE_STRIP, TRIANGLE_FAN, POINTS
 	}
 
-	public static Mesh createInstance(DrawMode mode, DrawType bufferType, VertexBuffer vertexBuffer,
+	public static Mesh createInstance(DrawMode drawMode, DrawType drawType, VertexBuffer vertexBuffer,
 			IndexBuffer indexBuffer) {
 		switch (EngineSettings.renderer) {
 
 		default:
-			return new OGL_VertexArray(mode, bufferType, vertexBuffer, indexBuffer);
+			return new OGL_VertexArray(drawMode, drawType, vertexBuffer, indexBuffer);
 		}
 	}
 
@@ -45,6 +45,10 @@ public abstract class Mesh {
 	public abstract int getID();
 
 	public abstract void renderIndexed(int count);
+
+	public final void renderIndexed() {
+		renderIndexed(indexBuffer.capacity());
+	};
 
 	public abstract void renderArrays(int first, int count);
 }
