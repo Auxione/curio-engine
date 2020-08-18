@@ -5,6 +5,7 @@ import java.awt.Font;
 import core.EngineSettings;
 import core.SceneBasedGame;
 import core.scenesys.SceneManager;
+import graphics.Blending;
 import graphics.Color;
 import graphics.renderer2d.FontData;
 
@@ -50,7 +51,7 @@ public class Main extends SceneBasedGame {
 		FontData.createFromAWT(new Font("Arial", Font.PLAIN, 20));
 		new MainMenuScene();
 		new PlayScene();
-
+		Blending.getInstance().set(true);
 		// change to scene in index 0
 		SceneManager.getInstance().load(0);
 		SceneManager.getInstance().change(0);

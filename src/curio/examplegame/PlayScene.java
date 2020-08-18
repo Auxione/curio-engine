@@ -105,7 +105,7 @@ public class PlayScene extends Scene {
 	}
 
 	@Override
-	public void onGUIRender(Renderer2D renderer2D) {
+	public void onScreenRender(Renderer2D renderer2D) {
 		// render rocket and asteroids
 		this.procket.render(renderer2D);
 		for (int i = 0; i < asteroids.length; i++) {

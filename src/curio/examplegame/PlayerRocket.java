@@ -101,7 +101,7 @@ public class PlayerRocket {
 	// Spawn new asteroid with random direction and color.
 	public void spawn(float x, float y) {
 		this.transform.localPosition.set(x, y);
-		this.transform.localRotation = Rotationf.fromDegrees(MathUtils.random(0, 360));
+		this.transform.localRotation.setDEG(MathUtils.random(0, 360));
 
 		this.rigidBody.reset();
 
