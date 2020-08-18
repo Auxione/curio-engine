@@ -18,8 +18,16 @@ public abstract class Event {
 	 * activate or disable the event.
 	 */
 	public boolean active = true;
-	public static Input input;
-	public static Window window;
+	private static Input input;
+	private static Window window;
+
+	public static Input getInput() {
+		return input;
+	}
+
+	public static Window getWindow() {
+		return window;
+	}
 
 	/**
 	 * Create new event then register it to {@link EventContainer}.
