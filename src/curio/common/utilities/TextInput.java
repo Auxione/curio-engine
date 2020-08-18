@@ -156,10 +156,10 @@ public class TextInput {
 
 	public final boolean onKeyReleased(int key, char c) {
 		if (key == Input.KEY_RIGHT_CONTROL || key == Input.KEY_LEFT_CONTROL) {
-			this.key_Control = true;
+			this.key_Control = false;
 			return true;
 		} else if (key == Input.KEY_RIGHT_SHIFT || key == Input.KEY_LEFT_SHIFT) {
-			this.key_Shift = true;
+			this.key_Shift = false;
 			return true;
 		}
 		return false;
