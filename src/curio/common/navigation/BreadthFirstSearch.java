@@ -19,7 +19,7 @@ public class BreadthFirstSearch {
 	private boolean[][] visited;
 	private ArrayList<Integer> bannedIDs;
 	private ArrayList<Integer> wantedIDs;
-	private Tilemap iCellMap;
+	private Tilemap tilemap;
 
 	private TileCoordinate2 startCellCoordinate;
 
@@ -42,22 +42,21 @@ public class BreadthFirstSearch {
 	 * @param cellularMap The CellularMap to search path.
 	 * @param searchLayer The layer to search.
 	 */
-	public BreadthFirstSearch setParameters(Tilemap iCellMap, int searchLayer) {
-		clear();
-		this.iCellMap = iCellMap;
-		this.visited = new boolean[this.iCellMap.getWidth()][this.iCellMap.getHeight()];
+	public BreadthFirstSearch setParameters(Tilemap tilemap, int searchLayer) {
+		reset();
+		this.tilemap = tilemap;
+		this.visited = new boolean[this.tilemap.getWidth()][this.tilemap.getHeight()];
 		return this;
 	}
 
 	/**
 	 * Clears all data.
 	 */
-	public void clear() {
+	public void reset() {
 		this.startCellCoordinate = null;
 		this.searchedCells.clear();
 		this.bannedCells.clear();
 		this.resultCellCoordinates.clear();
-
 		this.wantedIDs.clear();
 		this.bannedIDs.clear();
 	}
@@ -81,7 +80,7 @@ public class BreadthFirstSearch {
 				this.searchedCells.add(new TileCoordinate2(x, y));
 
 				for (int bi : bannedIDs) {
-					if (iCellMap.getCellID(x, y) == bi) {
+					if (tilemap.getCellID(x, y) == bi) {
 						this.bannedCells.add(new TileCoordinate2(x, y));
 						continue search_Loop;
 					}
@@ -91,7 +90,7 @@ public class BreadthFirstSearch {
 				}
 
 				for (int wi : wantedIDs) {
-					if (iCellMap.getCellID(x, y) == wi) {
+					if (tilemap.getCellID(x, y) == wi) {
 						this.resultCellCoordinates.add(new TileCoordinate2(x, y));
 						break;
 					}

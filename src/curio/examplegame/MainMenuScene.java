@@ -58,7 +58,7 @@ public class MainMenuScene extends Scene {
 	}
 
 	@Override
-	public void onScreenRender(Renderer2D renderer2D) {
+	public void renderScreen(Renderer2D renderer2D) {
 		guiEnv.render(renderer2D);
 	}
 
