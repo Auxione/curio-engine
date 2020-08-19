@@ -27,7 +27,6 @@ public class AStarPathfinder {
 	private PriorityQueue<Node2> openList;
 	private PriorityQueue<Node2> closedList;
 
-	private Path path;
 	private ArrayList<TileCoordinate2> bannedCells;
 
 	public AStarPathfinder() {
@@ -38,7 +37,6 @@ public class AStarPathfinder {
 		this.bannedIDs = new ArrayList<Integer>();
 		this.bannedCells = new ArrayList<TileCoordinate2>();
 
-		this.path = new Path();
 	}
 
 	/**
@@ -65,7 +63,6 @@ public class AStarPathfinder {
 		this.bannedIDs.clear();
 		this.bannedCells.clear();
 
-		this.path.clear();
 		return this;
 	}
 
@@ -76,19 +73,19 @@ public class AStarPathfinder {
 	 * @param startCellCoordinate  The cell to start search.
 	 * @param targetCellCoordinate The cell to reach target.
 	 */
-	public AStarPathfinder search(TileCoordinate2 startCellCoordinate, TileCoordinate2 targetCellCoordinate) {
+	public ArrayList<TileCoordinate2> search(TileCoordinate2 startCellCoordinate, TileCoordinate2 targetCellCoordinate) {
 		this.targetNode = new Node2(targetCellCoordinate);
 
 		if (tilemap.isInBorders(startCellCoordinate.x(), startCellCoordinate.y()) == false) {
-			return this;
+			return null;
 		}
 
 		else if (tilemap.isInBorders(targetCellCoordinate.x(), targetCellCoordinate.y()) == false) {
-			return this;
+			return null;
 		}
 
 		if (checkBannedIDList(this.targetNode) == true) {
-			return this;
+			return null;
 		}
 
 		this.startNode = new Node2(startCellCoordinate);
@@ -125,12 +122,12 @@ public class AStarPathfinder {
 				}
 			}
 		}
-
+		ArrayList<TileCoordinate2> out = new ArrayList<TileCoordinate2>();
 		while (this.targetNode != null) {
-			this.path.add(this.targetNode);
+			out.add(this.targetNode);
 			this.targetNode = this.targetNode.parentNode;
 		}
-		return this;
+		return out;
 	}
 
 	private boolean checkClosedList(Node2 currentNode) {
@@ -188,7 +185,7 @@ public class AStarPathfinder {
 			return Integer.compare(node1.getFCost(), node2.getFCost());
 		};
 	};
- 
+
 	public final Node2[] getSearchedNodes() {
 		Node2[] temp = new Node2[this.closedList.size()];
 		return this.closedList.toArray(temp);
@@ -212,12 +209,4 @@ public class AStarPathfinder {
 		return this.targetNode;
 	}
 
-	/**
-	 * Returns the created {@link Path}.
-	 * 
-	 * @return The {@link Path} to the target from start.
-	 */
-	public final Path getPath() {
-		return this.path;
-	}
 }
