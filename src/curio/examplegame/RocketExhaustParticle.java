@@ -44,6 +44,6 @@ public class RocketExhaustParticle extends Particle {
 		this.rigidBody.fixedUpdate(deltaTime);
 		this.position.add(this.rigidBody.getDeltaPosition());
 
-		this.currentColor.y += 0.1;
+		this.currentColor.g += 0.1;
 	}
 }

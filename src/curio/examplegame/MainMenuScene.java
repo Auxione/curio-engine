@@ -28,7 +28,7 @@ public class MainMenuScene extends Scene {
 		guiEnv.register(container);
 		container.rectTransform().localPosition.set(400 - 64, 300 - 64);
 
-		Button button = new Button(128, 64, new Fill(Color.limeGreen), new GUIEvent() {
+		Button button = new Button(128, 64, new Fill(Color.green), new GUIEvent() {
 
 			@Override
 			public void deactivated(GUIEntity entity) {
@@ -48,7 +48,7 @@ public class MainMenuScene extends Scene {
 		EdgeLayout.allign(button, container, 8, 2);
 
 		container.add(label);
-		
+
 		guiEnv.updateTransforms();
 	}
 
