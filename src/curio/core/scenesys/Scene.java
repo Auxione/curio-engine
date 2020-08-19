@@ -81,7 +81,7 @@ public abstract class Scene implements GameCycle, EventContainer {
 	}
 
 	@Override
-	public void onScreenRender(Renderer2D renderer) {
+	public void renderScreen(Renderer2D renderer) {
 	}
 
 	/**

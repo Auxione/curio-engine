@@ -67,7 +67,7 @@ public class Benchmark extends BasicGame {
 	}
 
 	@Override
-	public void onGUIRender(Renderer2D renderer2d) {
+	public void renderScreen(Renderer2D renderer2d) {
 		for (int x = 0; x < maxQuadsX; x++) {
 			for (int y = 0; y < maxQuadsY; y++) {
 				color.set(index, 255 - index, 255 - index);

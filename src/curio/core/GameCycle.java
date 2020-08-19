@@ -47,7 +47,7 @@ public interface GameCycle {
 	 * 
 	 * @param renderer2D : The renderer2D of the application.
 	 */
-	public void onScreenRender(Renderer2D renderer);
+	public void renderScreen(Renderer2D renderer);
 
 	/**
 	 * After successful break from the game loop this method called. The application
