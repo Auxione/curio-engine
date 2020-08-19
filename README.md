@@ -1,20 +1,22 @@
-# Curio-engine
-Curio engine is currently in an alpha state. This means that there are likely to be bugs and the code I push will probably break past versions. 
-With that said if you still would like to help develop or use the engine feel free to do so and post bug reports. 
-Curio Engine is a learning project based on various tutorials on internet. 
+# Curio-Engine
+Curio-Engine is a Game Engine Development learning project based on various tutorials on internet. This will be the last version of Curio-Engine. I may continue development in future.
 
 # Features
-* Basic Game Infrastructure
-* Input handling with key-mapping
-* 2D Render Engine
-* Sound Engine (support for .wav)
-* Tilemap system with A* Pathfinding and BFS.
-* Scene Management
-* Resource Management with File I/O
-
-# Examples
-* [Asteroids Demo](https://github.com/Auxione/curio-engine/blob/master/src/tests/examplegame/Main.java)
+* Game Infrastructure and Scene system.
+* Event handling (Keyboard, Mouse, Window).
+* Basic Audio system.
+* Resource Manager with File I/O.
+* 2D Renderer with Particle system.
+* FrameBuffers and Render target Camera.
+* Texture Atlas for merged sprites.
+* Bitmap Font creation from Java AWT.
+* GUI with Layout Manager.
+* Basic physics engine with ray-casting.
+* Tilemap system with [A* Pathfinding](https://en.wikipedia.org/wiki/A*_search_algorithm) and [BFS](https://en.wikipedia.org/wiki/Breadth-first_search).
+* Animator system for sprites and transforms.
+* Triangulators for indexing meshes.
+* ShapeFactory for creating polygons.
 
 # Licences
-* The engine, and all the backends in this repo are licenced under MIT licence, which you can find [here](https://github.com/Auxione/curio-engine/blob/master/LICENSE)
-* You can find LWJGL 3 licence [here](https://github.com/LWJGL/lwjgl3/blob/master/LICENSE.md).
+* [Curio-Engine](https://github.com/Auxione/curio-engine/blob/master/LICENSE)
+* [LWJGL 3](https://github.com/LWJGL/lwjgl3/blob/master/LICENSE.md).
