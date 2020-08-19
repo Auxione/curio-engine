@@ -1,10 +1,13 @@
 package graphics.renderer2d;
 
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import common.buffers.ImageBuffer;
+import common.buffers.TextureBuffer;
+import common.geom.Rectangle;
 import graphics.Texture;
 import graphics.TextureAtlas;
 import graphics.TextureCoordinate;
@@ -27,19 +30,11 @@ public class FontData {
 	 * The array of character heights.
 	 */
 	public int[] charHeights;
-	/**
-	 * The array texture maximum width.
-	 */
-	public int fontTextureWidth;
 
-	/**
-	 * The array texture maximum height.
-	 */
-	public int fontTextureHeight;
-
-	public FontData(int fontTextureWidth, int fontTextureHeight) {
-		this.fontTextureWidth = fontTextureWidth;
-		this.fontTextureHeight = fontTextureHeight;
+	public FontData() {
+		this.textureAtlas = new TextureAtlas(endChar - beginChar);
+		this.charWidths = new int[endChar - beginChar];
+		this.charHeights = new int[endChar - beginChar];
 	}
 
 	/**
@@ -70,7 +65,7 @@ public class FontData {
 
 	public static final int beginChar = 0;
 	public static final int endChar = 127;
-	public static final int textureSizeMultipler = 16;
+	public static final int maxRows = 127;
 	private static FontData lastCreatedFontData;
 
 	/**
@@ -86,62 +81,159 @@ public class FontData {
 	 * 
 	 * @return the created FontData.
 	 */
-	public static FontData createFontDataFromAWT(Font font) {
-		FontData out = new FontData(font.getSize() * textureSizeMultipler, font.getSize() * textureSizeMultipler);
-		BufferedImage imgTemp = new BufferedImage(out.fontTextureWidth, out.fontTextureHeight,
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) imgTemp.getGraphics();
+	public static FontData createFromAWT(Font font) {
+		FontData out = new FontData();
 
-		int rowHeight = 0;
-		int positionX = 0;
-		int positionY = 0;
-		int fontTextureCharHeight = 0;
+		BufferedImage toMetrics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D toMetricsGraphics = (Graphics2D) toMetrics.getGraphics();
+		toMetricsGraphics.setFont(font);
+		toMetricsGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		FontMetrics awtfontMetrics = toMetricsGraphics.getFontMetrics();
 
-		out.textureAtlas = new TextureAtlas(out.texture, endChar - beginChar);
-		out.charWidths = new int[endChar - beginChar];
-		out.charHeights = new int[endChar - beginChar];
+		int charSize = 0;
 
 		for (int i = beginChar; i < endChar; i++) {
-			char fontChar = (char) i;
-			BufferedImage charImage = TextureFactory.createCharImage(font, fontChar);
+			int index = i - beginChar;
+			out.charWidths[index] = awtfontMetrics.charWidth((char) index);
+			out.charHeights[index] = awtfontMetrics.getHeight();
 
-			out.charWidths[i - beginChar] = charImage.getWidth();
-			out.charHeights[i - beginChar] = charImage.getHeight();
-
-			/*
-			 * when current font position and width of the char exceeds the width of the
-			 * textureSet set index to new line
-			 */
-			if (positionX + out.charWidths[i - beginChar] >= out.fontTextureWidth) {
-				positionX = 0;
-				positionY += rowHeight;
-			}
-			// mark the position of the char text to its data
-			int charStoredX = positionX;
-			int charStoredY = positionY;
-			/*
-			 * below these lines adjusts font height and row height to new height if its
-			 * smaller than current char texture height
-			 */
-			if (out.charHeights[i - beginChar] > fontTextureCharHeight) {
-				fontTextureCharHeight = out.charHeights[i - beginChar];
+			if (charSize < out.charHeights[index]) {
+				charSize = out.charHeights[index];
 			}
 
-			if (out.charHeights[i - beginChar] > rowHeight) {
-				rowHeight = out.charHeights[i - beginChar];
+			else if (charSize < out.charWidths[index]) {
+				charSize = out.charWidths[index];
 			}
-			// draw the font to position
-			g.drawImage(charImage, positionX, positionY, null);
-			// shift to new line
-			positionX += out.charHeights[i - beginChar];
-
-			out.textureAtlas.put(i - beginChar, new TextureCoordinate());
-			out.textureAtlas.map(i - beginChar, out.fontTextureWidth, out.fontTextureHeight, charStoredX, charStoredY,
-					out.charWidths[i - beginChar], out.charHeights[i - beginChar]);
 		}
-		out.texture = Texture.createInstance(new ImageBuffer(imgTemp));
+
+		int maxTextureWidth = charSize * (maxRows + 1);
+		int maxTextureHeight = charSize * (endChar - beginChar + 1) / maxRows;
+
+		BufferedImage imgTemp = new BufferedImage(maxTextureWidth, maxTextureHeight, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) imgTemp.getGraphics();
+
+		int currentColomn = 0;
+		int currentRow = 0;
+		for (int i = beginChar; i < endChar; i++) {
+			int index = i - beginChar;
+			BufferedImage charImage = TextureFactory.createCharImage(font, (char) index);
+
+			int posX = charSize * currentRow;
+			int posY = charSize * currentColomn;
+			g.drawImage(charImage, posX, posY, null);
+
+			TextureCoordinate textureCoordinate = new TextureCoordinate();
+			textureCoordinate.x = (float) (posX) / maxTextureWidth;
+			textureCoordinate.y = (float) (posY) / maxTextureHeight;
+			textureCoordinate.width = (float) (out.charWidths[index]) / maxTextureWidth;
+			textureCoordinate.height = (float) (out.charHeights[index]) / maxTextureHeight;
+			out.textureAtlas.put(i, textureCoordinate);
+
+			currentRow++;
+			if (currentRow > maxRows) {
+				currentColomn++;
+				currentRow = 0;
+			}
+		}
+		out.texture = Texture.createInstance(new TextureBuffer(imgTemp));
 		out.textureAtlas.setTexture(out.texture);
 		lastCreatedFontData = out;
+		return out;
+	}
+
+	/**
+	 * Returns the index of the char where the point is on the rendered text.
+	 * Returns -1 if not detected.
+	 * 
+	 * @param string               : The rendered string to get index from.
+	 * @param maxTextWidth         : The maximum text width to limit.
+	 * @param maxTextHeight        : The maximum text height to limit.
+	 * @param charVerticalOffset   : Char offsets in x axis.
+	 * @param charHorizontalOffset : Char offsets in y axis.
+	 * @param textX                : X component of the rendered string.
+	 * @param textY                : Y component of the rendered string.
+	 * @param pointx               : X component of the point.
+	 * @param pointy               : Y component of the point.
+	 * @return the index number of the detected char in string or -1 if none
+	 *         detected.
+	 */
+	public int getIndex(String string, int maxTextWidth, int maxTextHeight, int charVerticalOffset,
+			int charHorizontalOffset, float textX, float textY, float pointx, float pointy) {
+		int nextCharPos = 0;
+		int nextLineHeight = 0;
+
+		for (int i = 0; i < string.length(); i++) {
+			int DrawWidth = this.charWidths[string.charAt(i) - FontData.beginChar];
+			int DrawHeight = this.charHeights[string.charAt(i) - FontData.beginChar];
+
+			if ((maxTextWidth > 0 && nextCharPos + DrawWidth >= maxTextWidth)) {
+				nextLineHeight += getLineHeight(this, string.substring(0, i)) + charHorizontalOffset;
+				if (maxTextHeight > 0 && nextLineHeight + DrawHeight > maxTextHeight) {
+					return i;
+				}
+				nextCharPos = 0;
+				nextCharPos = 0;
+			}
+			if (Rectangle.contains(textX + nextCharPos, textY + nextLineHeight, DrawWidth, DrawHeight, pointx,
+					pointy)) {
+				return i;
+			}
+
+			nextCharPos += DrawWidth + charVerticalOffset;
+		}
+		return -1;
+	}
+
+	/**
+	 * Returns the line width.
+	 * 
+	 * @param string : The string to calculate line width.
+	 * @return the width of the given string.
+	 */
+	public final int getLineWidth(String string) {
+		return getLineWidth(this, string);
+	}
+
+	/**
+	 * Returns the line height.
+	 * 
+	 * @param string : The string to calculate line height.
+	 * @return the height of the given string.
+	 */
+	public final int getLineHeight(String string) {
+		return getLineHeight(this, string);
+	}
+
+	/**
+	 * Returns the line width.
+	 * 
+	 * @param string : The string to calculate line width.
+	 * @return the width of the given string.
+	 */
+	public static final int getLineWidth(FontData fontdata, String string) {
+		int out = 0, maxTextWidth = 0;
+		for (int i = 0; i < string.length(); i++) {
+			out += fontdata.charWidths[string.charAt(i)];
+		}
+		if (out > maxTextWidth && maxTextWidth != 0) {
+			out = maxTextWidth;
+		}
+		return out;
+	}
+
+	/**
+	 * Returns the line height.
+	 * 
+	 * @param string : The string to calculate line height.
+	 * @return the height of the given string.
+	 */
+	public static final int getLineHeight(FontData fontdata, String string) {
+		int out = 0;
+		for (int i = 0; i < string.length(); i++) {
+			if (out < fontdata.charHeights[string.charAt(i)]) {
+				out = fontdata.charHeights[string.charAt(i)];
+			}
+		}
 		return out;
 	}
 }
